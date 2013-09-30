@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="utf-8" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="author" content="Sebastiano Midolo - sebastiano.midolo@comune.torino.it" />
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script src = "ui.js"></script>
+  <script src="tooltip.js"></script>
+  <link rel="stylesheet" media="screen,projection" type="text/css"
+    href="ClavisBCT_manual.css" />
+  <title>ClavisBCT - estensione Firefox per Clavis</title>
+ </head>
+
+ <body>
+
+<div id="page">
+
+
+<h1>ClavisBCT</h1>
+<div id="dataagg">[ultima modifica: 9 settembre 2013]</div>
+<!-- ultima modifica: 7 febbraio 2013 -->
+<!-- ultima modifica: 5 febbraio 2013 -->
+<!-- ultima modifica: 1 febbraio 2013 -->
+<!-- ultima modifica: 9 gennaio 2013 -->
+<!-- ultima modifica: 8 gennaio 2013 -->
+
+
+<h2 id="premessa">Premessa</h2>
+<p>ClavisBCT &egrave; un modulo aggiuntivo per Firefox, sviluppato
+dalle Biblioteche Civiche Torinesi allo scopo di modificare il funzionamento
+dell'interfaccia utente di Clavis, adattandola alle esigenze specifiche delle BCT.<br/>
+In termini tecnici, ClavisBCT &egrave; uno <em>script</em>
+<a title="Informazioni su GreaseMonkey da Wikipedia"
+href="http://it.wikipedia.org/wiki/Greasemonkey">GreaseMonkey</a>.
+</p>
+<p class="importante">
+ClavisBCT &egrave; attualmente in fase di sviluppo. Per segnalare
+eventuali problemi rilevati durante l'uso potete inviare una email
+all'indirizzo "bct.ilas@comune.torino.it" oppure direttamente
+allo sviluppatore "sebastiano.midolo@comune.torino.it".
+</p>
+
+<h2>Installazione</h2>
+<p></p>
+L'installazione di ClavisBCT, che non richiede privilegi di amministratore della macchina,
+comporta due passaggi:
+<ul>
+ <li id="passaggio1">
+installazione di
+ <a href="https://addons.mozilla.org/it/firefox/addon/greasemonkey/">GreaseMonkey</a>
+  </li>
+
+ <li>installazione di <a href="http://456.selfip.net/clavis/clavisbct.user.js">ClavisBCT</a>
+ </li>
+</ul>
+
+
+<h2>Funzionalit&agrave; di ClavisBCT</h2>
+<p>
+L'estensione <em>ClavisBCT</em> entra in funzione su alcune pagine di Clavis;
+quelle sulle quali l'estensione &egrave; attiva sono contrassegnate
+dal logo <img id="logoclavisbct" alt="Logo ClavisBCT" src="http://456.selfip.net/clavis/clavisbctlogosmall.png"> che sostituisce il normale logo "Clavis", presente
+in alto a sinistra su ciascuna pagina.
+</p>
+
+<p> Di seguito sono elencate le pagine di Clavis interessate dall'estensione ClavisBCT.
+</p>
+
+<ul>
+ <li>Banco prestito
+  <ul>
+   <li>Nella pagina dell'utente, i libri in prestito vengono visualizzati in
+carattere ingrandito; inoltre vengono evidenziati in colore diverso
+gli esemplari gestiti dalla biblioteca corrente.
+   </li>
+  </ul>
+ </li>
+
+ <li>Catalogazione
+
+  <ul>
+   <li>in "Visualizzazione dati della notizia" il link a OPAC in alto a destra
+   punta al record corrispondente alla notizia invece che alla home page dell'opac
+   </li>
+
+   <li>in "Visualizzazione dati della notizia", limitatamente ai record di periodici,
+   vengono attivati alcuni comportamenti speciali, relativi alla creazione di
+   fascicoli e esemplari (funzione utilizzata dall'ufficio periodici).
+   In particolare, <b>vengono nascosti i legami con altri titoli</b> per rendere
+   pi&grave; snella la visualizzazione della sezione gestionale (fascicoli, esemplari etc.).
+   <br/>A partire dalla versione 0.11 &egrave; possibile visualizzare  di nuovo i legami
+   con un <em>click</em>.
+   </li>
+
+   <li>in "Visualizzazione dati della notizia", le schede dotate di BID SBN presentano
+    un link diretto alla corrispondente scheda nell'OPAC ICCU (www.sbn.it).
+   </li>
+
+
+   <li>in "Ricerca catalogo" viene reso disponibile un menu a tendina (lo stesso
+   di norma reperibile nella sezione "piu' opzioni") per filtrare le ricerche:
+   in genere e' comodo selezionare "Livello bibliografico"; questo senza dover
+   aprire la maschera di ricerca avanzata, che riempie l'intero schermo, nei
+   casi in cui si voglia filtrare la ricerca per livello bibliografico
+   </li>
+
+   <li>in "Lista authority" viene aggiunto un campo di ricerca etichettato "AUTH ID",
+   che rende possibile cercare una voce di authority conoscendone il numero di record
+   </li>
+
+   <li>in "Catalogo: Vedi Authority" viene aggiunta l'eventuale informazione sul
+     <em>VID</em> SBN.
+  </li>
+
+
+   <li>in "Creazione esemplari multipla" vengono selezionate, dove necessario, le serie
+   inventariali di default (per esempio, la Torino centro ha "TZ" invece di "-"; la Musicale
+   ha "M" invece di "75"); inoltre quando saranno attive le sezioni di collocazione
+   (come Ragazzi, Narrativa etc - progetto in corso a dicembre 2012), digitando
+   la collocazione, per esempio "LP ASIM", nel box "sezione" e clickando sulla spunta
+   color verde, il browser seleziona automaticamente da menu a tendina la corrispondente
+   sezione (se esistente), aggiornando contestualmente il campo "collocazione". Nell'esempio
+   precedente, per la biblioteca Torino centro verra' selezionata la sezione "Libro parlato",
+   mentre nel campo collocazione apparira' "ASIM"; rimarranno invece intatte le collocazioni
+   delle biblioteche che non dispongono della sezione "LP". Il tutto avra' senso quando
+   avremo creato le sezioni Narrativa etc., per cui inserendo "N ASIM" il sistema selezionera'
+   la sezione "Narrativa", modificando la collocazione da "N ASIM" in "ASIM"
+   </li>
+
+   <li>in "Modifica notizia" - Creazione legami: appare un messaggio
+   "Inserire la parte iniziale del termine oppure l'id dell'authority": cioe',
+   se invece di inserire l'authority se ne conosce in anticipo l'Id, questo viene
+   utilizzato per recuperare dal database la corrispondente Authority.
+   Rimane a carico del catalogatore selezionare la funzione dell'authority
+   dal menu a tendina ("Responsabilita' principale", "secondaria", "alternativa",
+   "soggetto" etc).
+   </li>
+  </ul>
+ </li>
+
+ <li>Opac
+  <ul>
+   <li>in "Visualizzazione singolo record", sulla barra di navigazione viene inserito il link
+   "vedi in clavis", che conduce alla pagina della corrispondente notizia in Clavis
+   </li>
+   <li>limitatamente al catalogo del libro parlato, nella pagina di visualizzazione
+       dei risultati della ricerca a fianco di ogni titolo viene visualizzata
+       la collocazione; lo stesso avviene per i risultati della ricerca in Opac,
+       quando i risultati della ricerca vengono filtrati per una sola biblioteca.
+   </li>
+   <li>[v. 0.12] Introdotta <b>a titolo sperimentale</b> una funzionalita' di meta-ricerca:
+       a fondo pagina dei risultati di una ricerca appaiono i risultati della stessa
+       ricerca che ha prodotto la pagina, proveniente da altri cataloghi (al momento
+       Librinlinea, Universit&agrave; di Torino e Goethe-Institute di Torino).
+   </li>
+
+  </ul>
+ </li>
+</ul>
+
+
+
+<h2>Cronologia delle revisioni</h2>
+<p></p>
+
+Dal 7 febbraio 2013 l'estensione si &egrave; sdoppiata:
+<ul>
+<li><a href="http://456.selfip.net/clavis/clavisbct.user.js">clavisbct</a>
+contiene le funzioni integrative per il gestionale Clavis</li>
+<li><a href="http://456.selfip.net/clavis/clavisbct_opac.user.js">clavisbct_opac</a>
+&egrave; rivolta al pubblico in generale e riguarda solo
+ l'opac (non il gestionale)</li>
+</ul>
+Inoltre, &egrave; stata predisposta una versione particolare,
+<a href="http://456.selfip.net/clavis/others/librinlinea.user.js">clavisbct-librinlinea</a>
+, che attiva la metaricerca anche sul catalogo BCT, a partire da Librinlinea.
+
+
+<p>Infine, pu&ograve; tornare utile installare
+<a href="http://456.selfip.net/clavis/others/xref.user.js">xref</a>.
+</p>
+
+
+
+<pre>
+
+// lastmod   9 settembre 2013  v. 0.14 (aggiunto link a opac iccu da edit record)
+// lastmod   7 febbraio 2013  v. 0.13
+// lastmod   6 febbraio 2013  v. 0.12 (aggiunto modulo "polito" a meta_search)
+// lastmod   5 febbraio 2013  v. 0.12 (aggiunto modulo "unito" a meta_search)
+// lastmod   1 febbraio 2013  v. 0.12
+// lastmod  24 gennaio  2013  v. 0.11
+// lastmod  23 gennaio  2013  v. 0.10
+// lastmod  18 gennaio  2013  v. 0.9
+// lastmod  11 gennaio  2013  v. 0.8
+// lastmod   8 gennaio  2013  v. 0.7
+// lastmod  28 dicembre 2012  v. 0.6
+// lastmod  18 dicembre 2012  v. 0.5
+// lastmod  17 dicembre 2012  v. 0.4
+// lastmod  17 dicembre 2012  v. 0.3
+// lastmod  14 dicembre 2012  v. 0.2a
+// lastmod   6 dicembre 2012  v. 0.2
+// lastmod   5 dicembre 2012  v. 0.1d
+// lastmod   3 dicembre 2012  v. 0.1c
+// lastmod   3 dicembre 2012  v. 0.1b
+// lastmod  29 novembre 2012  v. 0.1a
+// lastmod  27 novembre 2012  v. 0.1
+</pre>
+
+
+</div>
+
+<div id = "tooltip"></div>
+
+</body>
+</html>
+
