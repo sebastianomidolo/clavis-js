@@ -82,7 +82,7 @@ function user_login_on_clavisbct(user,password) {
     var ip='';
     jQuery.ajax({
 	type: 'GET',
-	url: 'http://jsonip.com',
+	url: 'http://clavisbct.comperio.it/jsonip',
 	dataType: 'json',
 	success: function(res) {
 	    ip=res.ip;
@@ -90,11 +90,9 @@ function user_login_on_clavisbct(user,password) {
 	data: {},
 	async: false
     });
-    // giusto per non mandare la password in chiaro, ma non credo che sia molto sicuro:
     var hash = CryptoJS.SHA1(password);
     // alert(user + " : " + hash);
     var url=bctHostPort + '/ccu/' + user.replace(/\//g,'') + '/' + hash + '/' + CryptoJS.SHA1(ip);
-    // alert(url);
     // jQuery.getJSON(url, function(res) {});
     jQuery.ajax({
 	type: 'GET',
