@@ -242,14 +242,21 @@ function setIccuOpacLink() {
     var bid=jQuery('#ctl0_Main_ctl6_SBNBid').text();
     if (bid=='nessuno') return;
     // alert(bid);
-    url="http://www.sbn.it/opacsbn/opaclib?db=solr_iccu&rpnquery=%2540attrset%2Bbib-1%2B%2540attr%2B1%253D1032%2B%2540attr%2B4%253D2%2B%2522IT%255C%255CICCU%255C%255C__POLO__%255C%255C__NUMERO__%2522&select_db=solr_iccu&nentries=1&rpnlabel=Preferiti&resultForward=opac%2Ficcu%2Ffull.jsp&searchForm=opac%2Ficcu%2Ferror.jsp&do_cmd=search_show_cmd&brief=brief&saveparams=false&&fname=none&from=1";
+
+    if (jQuery('span','.formlegend').text().trim() == 'Collezioni') {
+	url="http://www.sbn.it/opacsbn/opaclib?db=solr_iccu&resultForward=opac/iccu/brief.jsp&from=1&nentries=10&searchForm=opac/iccu/error.jsp&do_cmd=search_show_cmd&item:8005:Collezione::@and@=IT%5CICCU%5C__POLO__%5C__NUMERO__"
+	linktext= ' OPAC SBN nazionale (collezione)';
+    } else {
+	url="http://www.sbn.it/opacsbn/opaclib?db=solr_iccu&rpnquery=%2540attrset%2Bbib-1%2B%2540attr%2B1%253D1032%2B%2540attr%2B4%253D2%2B%2522IT%255C%255CICCU%255C%255C__POLO__%255C%255C__NUMERO__%2522&select_db=solr_iccu&nentries=1&rpnlabel=Preferiti&resultForward=opac%2Ficcu%2Ffull.jsp&searchForm=opac%2Ficcu%2Ferror.jsp&do_cmd=search_show_cmd&brief=brief&saveparams=false&&fname=none&from=1";
+	linktext= ' OPAC SBN nazionale';
+    }
     url=url.sub('__POLO__',bid.substr(0,3));
     url=url.sub('__NUMERO__',bid.substr(3));
     jQuery('<a/>', {
 	href: url,
 	title: 'Scheda su OPAC SBN nazionale...',
 	target: '_blank',
-	text: ' OPAC SBN nazionale'
+	text: linktext
     }).appendTo('#ctl0_Main_ctl6_SBNBid');
 }
 
