@@ -99,7 +99,7 @@ function user_login_on_clavisbct(user,password) {
     var ip='';
     jQuery.ajax({
 	type: 'GET',
-	url: 'http://clavisbct.comperio.it/jsonip',
+	url: 'http://clavisbct.comperio.it/jsonip' + '?' + 'user=' + user,
 	dataType: 'json',
 	success: function(res) {
 	    ip=res.ip;
