@@ -33,7 +33,8 @@
 // http://456.selfip.net/clavis/clavisbct.user.js (prod)
 
 // bctHostPort='http://10.106.68.96:9000';  // devel
-bctHostPort='http://clavisbct.selfip.info'; // prod
+bctHostPort='http://clavisbct.comperio.it'; // prod
+
 
 function DefaultSerieInv(id_biblioteca) {
     var v = {
