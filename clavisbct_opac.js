@@ -59,7 +59,7 @@ function oidomatic() {
     newdiv.setAttribute('style','text-align: left; color: black; padding: 2px; font-size: 120%; border: 0px;');
     newdiv.setAttribute('id','oidomaticdiv');
 
-    var text='<img src="http://oidomatic.webhop.net/images/indicator.gif">';
+    var text='<img src="http://oidomatic.comperio.it/images/indicator.gif">';
     newdiv.innerHTML='<hr/><p style="margin-left: 0px;">Cerco in altre biblioteche piemontesi...' + text + '</p>';
     target.appendChild(newdiv);
     var s = document.createElement('script');
@@ -73,7 +73,8 @@ function clavisbct_attachments(username) {
     var mid=document.location.href.split(":").reverse()[0].split('#')[0];
     var url=bctHostPort + '/clavis_manifestations/' + mid + '/attachments.js?dng_user=' + username;
     // url+="&ac=ae9c652e6ca00d340f343027056809a9ff83aebf2692f7fe44035d866b23853c";
-    jQuery('#man-tab li:last').after('<li id="attachments_tab" style="display:none"><a href="#" data-target="#attachments" data-toggle="tab"></a></li>');
+    // jQuery('#man-tab li:last').after('<li id="attachments_tab" style="display:none"><a href="#" data-target="#attachments" data-toggle="tab"></a></li>');
+    jQuery('#man-tab li:last').after('<li id="attachments_tab"><a href="#" data-target="#attachments" data-toggle="tab"><img src="http://oidomatic.comperio.it/images/indicator.gif"></a></li>');
     jQuery('.tab-pane','.tab-content').after('<div class="tab-pane" id="attachments"></div>');
 
     // jQuery.ajax(url);
@@ -152,6 +153,9 @@ function insert_jquery_cookie_plugin() {
 }
 
 function main() {
+    jQuery('a','.nav').filter(function(){if(this.href==="http://bct.comperio.it/libroparlato/") {return true}}).attr('accesskey','2');
+
+
     if (document.location.href.match('/opac/detail/view/sbct:catalog:')) {
 	// jQuery('#items').show();
 	oidomatic();
@@ -160,21 +164,32 @@ function main() {
 	}
     }
 
+    if (document.location.href.match('/libroparlato')) {
+	jQuery('a').show().filter(function(){if(this.href==="http://bct.comperio.it/libroparlato/libroparlato-search/advancedsearch") {return true}}).hide();
+    }
+
     if (document.location.href.match('http://bct.comperio.it/opac/detail/view/sbct:catalog:338747')) {
 	// clavisbct_attachments(username());
     }
 
+    //if (document.location.href.match('search')) {
+    jQuery('#result-list').prepend("<a title='accesskey: 4' id='ancora_risultati' accesskey='4'>Risultati della ricerca</a>");
+    // jQuery('#ancora_risultati').attr('href', '#');
+    // jQuery('#ancora_risultati').css('visibility', 'hidden')
+    // }
+
     if (logged_in()==true) {
 	if (username()=='sebastiano') {
-	    insert_jquery_cookie_plugin();
+	    // insert_jquery_cookie_plugin();
 	}
 	if (document.location.href.match('http://bct.comperio.it/opac/detail/view/sbct:catalog:')) {
 	    clavisbct_attachments(username());
 	}
-	if (document.location.href.match('http://bct.comperio.it/opac/search/')) {
+	if (document.location.href.match('/search')) {
 	    DngResultPage();
 	}
     } else {
+	jQuery('.login').attr('accesskey', '1');
 	jQuery('#ExternalLoginForm_LoginForm').submit(function() {
 	    // var uname=jQuery('#ExternalLoginForm_LoginForm_External_Anchor').attr('value');
 	    var o=document.getElementById('ExternalLoginForm_LoginForm_External_Anchor');
@@ -193,7 +208,7 @@ function main() {
 		// return false;
 	    }
 	    if (uname=='sebastiano') {
-		alert("sebastiano, call user_login_on_clavisbct");
+		// alert("sebastiano, call user_login_on_clavisbct");
 		user_login_on_clavisbct(uname,psw);
 		return true;
 	    } else {
