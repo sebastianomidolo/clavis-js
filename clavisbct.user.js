@@ -19,7 +19,7 @@
 // @creator        Sebastiano Midolo - BCT (Biblioteche civiche torinesi)
 // @updateURL      http://456.selfip.net/clavis/clavisbct.user.js
 // @icon           http://456.selfip.net/clavis/clavisbctlogosmall.png
-// @version        0.14
+// @version        0.15
 // ==/UserScript==
 
 // lastmod  9 settembre 2013  v. 0.14  setIccuOpacLink
@@ -79,21 +79,30 @@ function init_session() {
     }
 }
 
-function load_js() {
+function load_js(filepath) {
     var s = document.createElement('script');
-    s.src = 'http://456.selfip.net/clavis/clavisbct.js';
+    s.src = filepath;
     document.body.appendChild(s);
-    document.body.removeChild(s);
+    // document.body.removeChild(s);
 }
 
 if (typeof unsafeWindow.jQuery != "function") {
-    s = document.createElement('script');
+    load_js('http://456.selfip.net/clavis/clavisbct_with_jquery.js');
+    // s = document.createElement('script');
     // s.src = 'http://code.jquery.com/jquery-latest.js';
-    s.src = 'http://code.jquery.com/jquery.min.js';
-    document.body.appendChild(s);
-    document.body.removeChild(s);
+    // s.src = 'http://code.jquery.com/jquery.min.js';
+    // s.src = 'http://456.selfip.net/jquery.min.js';
+    // document.body.appendChild(s);
+
+    // console.log('before: ' + typeof unsafeWindow.jQuery);
+    // setTimeout(function(){
+    //	console.log('after 2000: ' + typeof unsafeWindow.jQuery);
+    // },2000);
+    // document.body.removeChild(s);
     // alert('Caricato jQuery da script GM');
+} else {
+    load_js('http://456.selfip.net/clavis/clavisbct.js');
 }
 
-load_js();
+
 init_session();
