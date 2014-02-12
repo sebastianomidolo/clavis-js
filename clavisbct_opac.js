@@ -161,16 +161,26 @@ function inserisci_legenda_per_screen_reader() {
     }).insertAfter('h1:first-child').html(helptext);
 }
 
+function adjust_multilevel_page() {
+    var testo=jQuery('#items').text().match('Spiacenti, al momento');
+    if(testo===null) return;
+    // alert(testo);
+    var titoli=jQuery('.titlesWrapper','#details');
+    jQuery('p','#items').html(titoli);
+    jQuery('ul','#items').css('display','block');
+    jQuery('a','#items').filter(function() {
+	if (jQuery(this).text().match('Mostra elenco')) {
+	    return true;
+	}
+    }).css("display", "none");
+}
+
 function main() {
     jQuery('a','.nav').filter(function(){if(this.href==="http://bct.comperio.it/libroparlato/") {return true}}).attr('accesskey','2');
 
-
     if (document.location.href.match('/opac/detail/view/sbct:catalog:')) {
-	// jQuery('#items').show();
+	adjust_multilevel_page();
 	oidomatic();
-	if (username()=='sebastiano') {
-	    // jQuery('#items').show(); 
-	}
     }
 
     if (document.location.href.match('/libroparlato')) {
