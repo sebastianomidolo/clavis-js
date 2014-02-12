@@ -152,6 +152,15 @@ function insert_jquery_cookie_plugin() {
     document.body.appendChild(s);
 }
 
+function inserisci_legenda_per_screen_reader() {
+    var helptext="<h1>Tasti di scelta rapida - access Key - per la consultazione del catalogo del libro parlato:</h1><ul><li>1:  inserisci username e password utente</li><li>2:  vai al catalogo del libro parlato</li><li>3:  vai all'elenco dei libri parlati disponibili per il download</li><li>4:  vai ai risultati di una ricerca</li><li>5:  vai al download e all'ascolto di  un libro parlato selezionato</li></ul>"
+
+    jQuery('<div/>', {
+	id: 'legenda_per_screen_reader',
+	style: 'display: none'
+    }).insertAfter('h1:first-child').html(helptext);
+}
+
 function main() {
     jQuery('a','.nav').filter(function(){if(this.href==="http://bct.comperio.it/libroparlato/") {return true}}).attr('accesskey','2');
 
@@ -224,5 +233,6 @@ jQuery(document).ready(function() {
     jQuery.noConflict();
     jQuery('a.logo', '#header').attr('href','http://www.comune.torino.it/cultura/biblioteche/');
     jQuery('a.logo', '#header').attr('title','Sito web delle Biblioteche civiche torinesi');
+    inserisci_legenda_per_screen_reader();
     main();
 });
