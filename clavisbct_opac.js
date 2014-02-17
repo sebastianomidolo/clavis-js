@@ -28,7 +28,7 @@ k)-899497514);j=k;k=e;e=g<<30|g>>>2;g=h;h=c}b[0]=b[0]+h|0;b[1]=b[1]+g|0;b[2]=b[2
 
 
 function logged_in() {
-    if (jQuery('a[href="Security/logout"]','#header').size() == 1) {
+    if (jQuery('a[href="Security/logout"]','.sidebar-bottom').size() == 1) {
 	return true;
     } else {
 	return false;
@@ -38,7 +38,7 @@ function username() {
     if (logged_in()==false) {
 	return '';
     } else {
-	var v = jQuery('a[href^="profile/view/"]','#header').first().attr("href");
+	var v = jQuery('a[href^="profile/view/"]','.avatar').first().attr("href");
 	if (typeof(v)==="string") {
 	    v=v.split('/');
 	    return v[v.length-1];
@@ -72,21 +72,8 @@ function oidomatic() {
 function clavisbct_attachments(username) {
     var mid=document.location.href.split(":").reverse()[0].split('#')[0];
     var url=bctHostPort + '/clavis_manifestations/' + mid + '/attachments.js?dng_user=' + username;
-    // url+="&ac=ae9c652e6ca00d340f343027056809a9ff83aebf2692f7fe44035d866b23853c";
-    // jQuery('#man-tab li:last').after('<li id="attachments_tab" style="display:none"><a href="#" data-target="#attachments" data-toggle="tab"></a></li>');
-    jQuery('#man-tab li:last').after('<li id="attachments_tab"><a href="#" data-target="#attachments" data-toggle="tab"><img src="http://oidomatic.comperio.it/images/indicator.gif"></a></li>');
-    jQuery('.tab-pane','.tab-content').after('<div class="tab-pane" id="attachments"></div>');
-
-    // jQuery.ajax(url);
-
-    //jQuery.ajax({
-    //url: url
-    //}).done(function() {
-    //});
-    if (username=='sebastiano') {
-	// alert(url);
-    }
-	
+    jQuery('li','.circ').last().after('<li id="attachments_tab"><a href="#" data-target="#attachments" data-toggle="tab"><img src="http://oidomatic.comperio.it/images/indicator.gif"></a></li>');
+    jQuery('#accordion').children().first().before('<div class="hidden panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-target="#attachments">Allegati</a></h4></div><div id="attachments" class="panel-collapse in"><div class="panel-body detail"></div></div></div>');
     jQuery.ajax({
 	url: url,
 	dataType: "script"
