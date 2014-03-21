@@ -124,8 +124,7 @@ function esemplari_da_inizializzare() {
 }
 
 function catalogatori_di_libri_nuovi() {
-    // return [3,4,8,9,184,238,369,376,380];
-    return [3,4,8,9,184,238,369,376,380,408,409,410];
+    return [3,4,8,9,184,238,369,376,380,408,409,410,435];
 }
 
 // FC http://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id=1940535
