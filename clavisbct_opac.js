@@ -228,8 +228,8 @@ function main() {
 
 jQuery(document).ready(function() {
     jQuery.noConflict();
-    jQuery('a.logo', '#header').attr('href','http://www.comune.torino.it/cultura/biblioteche/');
-    jQuery('a.logo', '#header').attr('title','Sito web delle Biblioteche civiche torinesi');
+    jQuery('a.logo','.mainHeader').attr('href','http://www.comune.torino.it/cultura/biblioteche/');
+    jQuery('a.logo','.mainHeader').attr('title','Sito web delle Biblioteche civiche torinesi');
     inserisci_legenda_per_screen_reader();
     main();
 });
