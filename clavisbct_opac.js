@@ -195,7 +195,8 @@ function main() {
 	    DngResultPage();
 	}
     } else {
-	jQuery('.login').attr('accesskey', '1');
+	// jQuery('.login').attr('accesskey', '1');
+	jQuery('.offcanvas-btn','.container').first().attr('accesskey','1');
 	jQuery('#ExternalLoginForm_LoginForm').submit(function() {
 	    // var uname=jQuery('#ExternalLoginForm_LoginForm_External_Anchor').attr('value');
 	    var o=document.getElementById('ExternalLoginForm_LoginForm_External_Anchor');
