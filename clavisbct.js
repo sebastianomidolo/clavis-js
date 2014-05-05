@@ -33,7 +33,8 @@
 // http://456.selfip.net/clavis/clavisbct.user.js (prod)
 
 // bctHostPort='http://10.106.68.96:9000';  // devel
-bctHostPort='http://clavisbct.selfip.info'; // prod
+// bctHostPort='http://clavisbct.selfip.info'; // prod
+bctHostPort='http://clavisbct.comperio.it'; // prod
 
 /*! jQuery v1.10.2 | (c) 2005, 2013 jQuery Foundation, Inc. | jquery.org/license
 //@ sourceMappingURL=jquery.min.map
@@ -179,20 +180,19 @@ function ItemInsertPage () {
 	// alert(url);
 	var x;
 	jQuery.getJSON(url, function(d) {
-	    // jQuery("#leftmessage1").text(d.clavis_item.loan_class);
-	    x=d.clavis_item.loan_class;
+	    x=d.loan_class;
 	    if (x!=undefined) jQuery("#ctl0_Main_LoanClass").val(x.strip());
 	    
-	    x=d.clavis_item.section;
+	    x=d.section;
 	    if (x!=undefined) jQuery("#ctl0_Main_Section").val(x.strip());
 
-	    x=d.clavis_item.collocation;
+	    x=d.collocation;
 	    if (x!=undefined) jQuery("#ctl0_Main_Collocation").val(x.strip());
 
-	    x=d.clavis_item.inventory_serie_id;
+	    x=d.inventory_serie_id;
 	    if (x!=undefined) jQuery("#ctl0_Main_InventorySerieId").val(x.strip());
 	    
-	    x=d.clavis_item.item_media;
+	    x=d.item_media;
 	    if (x!=undefined) jQuery("#ctl0_Main_ItemMedia").val(x.strip());
 
 	    jQuery("#ctl0_Main_OpacVisible").prop('checked',true)
