@@ -125,7 +125,7 @@ function esemplari_da_inizializzare() {
 }
 
 function catalogatori_di_libri_nuovi() {
-    return [3,4,8,9,184,238,369,376,380,408,409,410,435];
+    return [3,4,8,9,184,238,317,369,376,380,408,409,410,435,448,455];
 }
 
 // FC http://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id=1940535
@@ -376,6 +376,17 @@ function CatalogRecord() {
     }
 
     // jQuery("#ctl0_Main_AvailableItemsPanel").prev().hide();
+}
+
+
+function AuthorityEditPage() {
+    init_clavisbct();
+    if(getParameterByName('id')!='') return;
+    if(jQuery('#ctl0_Main_AuthEdit_AuthorityTypeList').val()=='C') {
+	jQuery('#ctl0_Main_AuthEdit_ClassCode').val(getParameterByName('Title'));
+	jQuery('#ctl0_Main_AuthEdit_ClassItemCode').val(getParameterByName('Title'));
+	jQuery('#ctl0_Main_AuthEdit_ClassEdition').val('22');
+    }
 }
 
 function AuthorityList() {
@@ -702,6 +713,11 @@ function main() {
     // 18 gennaio 2013
     if (document.location.href.match('Catalog.AuthorityViewPage')) {
 	return AuthorityViewPage();
+    }
+
+    // 5 maggio 2014
+    if (document.location.href.match('Catalog.AuthorityEditPage')) {
+	return AuthorityEditPage();
     }
 
     // per opac
