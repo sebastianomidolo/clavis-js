@@ -10,6 +10,7 @@
 // @include        http://sbct.comperio.it/index.php?page=Catalog.ItemInsertPage*
 // @include        http://sbct.comperio.it/index.php?page=Catalog.AuthorityList*
 // @include        http://sbct.comperio.it/index.php?page=Catalog.AuthorityViewPage*
+// @include        http://sbct.comperio.it/index.php?page=Catalog.AuthorityEditPage*
 // @include        http://bct.comperio.it/opac/detail/view/sbct:catalog:*
 // @include        http://bct.comperio.it/libroparlato/search*
 // @include        http://bct.comperio.it/opac/search*
@@ -19,7 +20,7 @@
 // @creator        Sebastiano Midolo - BCT (Biblioteche civiche torinesi)
 // @updateURL      http://456.selfip.net/clavis/clavisbct.user.js
 // @icon           http://456.selfip.net/clavis/clavisbctlogosmall.png
-// @version        0.15
+// @version        0.16
 // ==/UserScript==
 
 // lastmod  9 settembre 2013  v. 0.14  setIccuOpacLink
