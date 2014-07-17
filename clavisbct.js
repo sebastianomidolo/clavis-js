@@ -499,13 +499,25 @@ function AuthorityViewPage() {
 	url=bctHostPort + '/clavis_authorities/info.json?id=' + id;
     jQuery.getJSON(url, function(d) {
 	if (d['term_resource']!=undefined) {
-	    var target=jQuery('tr:first td:first span:first',"#ctl0_Main_AuthViewer_AuthViewer");
-	    n = '<br/>' + d['term_resource'] + ' (source:' + d['bid_source'] + ')';
-	    target.append("<br/>" + n);
+	    var url="http://opac.sbn.it/opacsbn/opaclib?db=solr_iccu&resultForward=opac/iccu/brief.jsp&from=1&nentries=10&searchForm=opac/iccu/error.jsp&do_cmd=search_show_cmd&item:5032:BID=IT%5CICCU%5C__POLO__%5C__NUMERO__"
+	    var target=jQuery("#ctl0_Main_AuthViewer_ctl1_SBNBid");
+	    var bid=d['term_resource'];
+
+	    if(d['bid_source']=='SBN' && bid[3]=='V') {
+		linktext = 'OPAC SBN nazionale';
+		target.append(' ');
+		url=url.sub('__POLO__',bid.substr(0,3));
+		url=url.sub('__NUMERO__',bid.substr(3));
+		jQuery('<a/>', {
+		    href: url,
+		    title: 'Cerca su OPAC SBN nazionale...',
+		    target: '_blank',
+		    text: linktext
+		}).appendTo(target);
+	    }
 	}
     });
 }
-
 
 function RecordList() {
     init_clavisbct();
