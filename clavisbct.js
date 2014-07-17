@@ -495,28 +495,22 @@ function EditRecord() {
 function AuthorityViewPage() {
     init_clavisbct();
 
-    var id=document.location.href.split('=').last(),
-	url=bctHostPort + '/clavis_authorities/info.json?id=' + id;
-    jQuery.getJSON(url, function(d) {
-	if (d['term_resource']!=undefined) {
-	    var url="http://opac.sbn.it/opacsbn/opaclib?db=solr_iccu&resultForward=opac/iccu/brief.jsp&from=1&nentries=10&searchForm=opac/iccu/error.jsp&do_cmd=search_show_cmd&item:5032:BID=IT%5CICCU%5C__POLO__%5C__NUMERO__"
-	    var target=jQuery("#ctl0_Main_AuthViewer_ctl1_SBNBid");
-	    var bid=d['term_resource'];
+    var url="http://opac.sbn.it/opacsbn/opaclib?db=solr_iccu&resultForward=opac/iccu/brief.jsp&from=1&nentries=10&searchForm=opac/iccu/error.jsp&do_cmd=search_show_cmd&item:5032:BID=IT%5CICCU%5C__POLO__%5C__NUMERO__"
+    var target=jQuery("#ctl0_Main_AuthViewer_ctl1_SBNBid");
+    var bid=jQuery('#ctl0_Main_AuthViewer_ctl1_SBNBid').text();
 
-	    if(d['bid_source']=='SBN' && bid[3]=='V') {
-		linktext = 'OPAC SBN nazionale';
-		target.append(' ');
-		url=url.sub('__POLO__',bid.substr(0,3));
-		url=url.sub('__NUMERO__',bid.substr(3));
-		jQuery('<a/>', {
-		    href: url,
-		    title: 'Cerca su OPAC SBN nazionale...',
-		    target: '_blank',
-		    text: linktext
-		}).appendTo(target);
-	    }
-	}
-    });
+    if(bid[3]=='V') {
+	linktext = 'OPAC SBN nazionale';
+	target.append(' ');
+	url=url.sub('__POLO__',bid.substr(0,3));
+	url=url.sub('__NUMERO__',bid.substr(3));
+	jQuery('<a/>', {
+	    href: url,
+	    title: 'Cerca su OPAC SBN nazionale...',
+	    target: '_blank',
+	    text: linktext
+	}).appendTo(target);
+    }
 }
 
 function RecordList() {
