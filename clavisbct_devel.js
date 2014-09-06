@@ -33,7 +33,8 @@
 // http://456.selfip.net/clavis/clavisbct.user.js (prod)
 
 // bctHostPort='http://10.106.68.96:9000';  // devel
-bctHostPort='http://clavisbct.selfip.info'; // prod
+// bctHostPort='http://clavisbct.selfip.info'; // prod
+bctHostPort='http://clavisbct.comperio.it'; // prod
 
 /*! jQuery v1.10.2 | (c) 2005, 2013 jQuery Foundation, Inc. | jquery.org/license
 //@ sourceMappingURL=jquery.min.map
