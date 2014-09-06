@@ -6,7 +6,8 @@
 // lastmod 14 febbraio 2013
 // lastmod  7 febbraio 2013 - (scorporato da clavis gestionale)
 
-bctHostPort='http://clavisbct.selfip.info';
+// bctHostPort='http://clavisbct.selfip.info';
+bctHostPort='http://clavisbct.comperio.it';
 
 function metaSearch(q) {
     function doMetaSearch(opac_target,query,dryrun) {
