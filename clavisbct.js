@@ -703,7 +703,8 @@ function main() {
 
     // 17 dicembre 2012
     if (document.location.href.match('Circulation.NewLoan')) {
-	return NewLoan();
+	// return NewLoan();  // disabilitato 18 agosto 2014
+	return;
     }
 
     // 18 dicembre 2012
