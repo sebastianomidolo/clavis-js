@@ -162,11 +162,23 @@ function adjust_multilevel_page() {
     }).css("display", "none");
 }
 
+function serial_manifestation(manifestation_id,target_div) {
+    // if (username()!='sebastiano') return;
+    var url=bctHostPort + '/clavis_consistency_notes/details.js?manifestation_id=' + manifestation_id;
+    jQuery.ajax({
+	url: url,
+	dataType: "script"
+    });
+}
+
 function main() {
     jQuery('a','.nav').filter(function(){if(this.href==="http://bct.comperio.it/libroparlato/") {return true}}).attr('accesskey','2');
 
     if (document.location.href.match('/opac/detail/view/sbct:catalog:')) {
 	adjust_multilevel_page();
+	if(jQuery('#issues').size()===1) {
+	    serial_manifestation(document.location.href.split(":").reverse()[0], jQuery('#issues'));
+	}
 	oidomatic();
     }
 
@@ -174,8 +186,8 @@ function main() {
 	jQuery('a').show().filter(function(){if(this.href==="http://bct.comperio.it/libroparlato/libroparlato-search/advancedsearch") {return true}}).hide();
     }
 
-    if (document.location.href.match('http://bct.comperio.it/opac/detail/view/sbct:catalog:338747')) {
-	// clavisbct_attachments(username());
+    if (document.location.href.match('http://bct.comperio.it/opac/detail/view/sbct:catalog:15973')) {
+	// qualcosa
     }
 
     //if (document.location.href.match('search')) {
