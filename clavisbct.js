@@ -248,7 +248,7 @@ function setOpacLink(manifestation_id) {
 function setIccuOpacLink() {
     var bid=jQuery('#ctl0_Main_ctl6_SBNBid').text();
     if (bid=='nessuno') return;
-    // alert(bid);
+    var url;
 
     if (jQuery('span','.formlegend').text().trim() == 'Collezioni') {
 	url="http://www.sbn.it/opacsbn/opaclib?db=solr_iccu&resultForward=opac/iccu/brief.jsp&from=1&nentries=10&searchForm=opac/iccu/error.jsp&do_cmd=search_show_cmd&item:8005:Collezione::@and@=IT%5CICCU%5C__POLO__%5C__NUMERO__"
@@ -286,11 +286,10 @@ function CatalogRecord() {
 	}
 	var mid=document.location.href.split("=").reverse()[0],
 	    num=jQuery('#Popup').data('SingleStartNumber')-1;
-	url=bctHostPort + '/clavis_issues/0.json?manifestation_id=' + mid + '&start_number=' + num;
+	var url=bctHostPort + '/clavis_issues/0.json?manifestation_id=' + mid + '&start_number=' + num;
 	// alert(url);
 	jQuery.getJSON(url, function(data) {
-	    x=data['clavis_issue']['issue_volume'];
-	    jQuery('#Popup').data('SingleIssueVolume', x);
+	    jQuery('#Popup').data('SingleIssueVolume', data.issue_volume);
 	});
     }
 
@@ -312,6 +311,7 @@ function CatalogRecord() {
 	    jQuery('#Popup').data('SingleEndNumber', jQuery('#Popup').data('SingleStartNumber'));
 	    jQuery('#Popup').data('SingleNumModel', 'yn');
 	} else {
+	    jQuery("#Popup").contents().find('#ctl0_Main_IssueWizard_IssueCreationWizard_SingleIssueType').val('N')
 	    var m;
 	    // Dal 28 maggio 2013, su segnalazione mancato funzionamento da uff per) questa:
 	    // jQuery("#Popup").contents().find("form select :last").val('yn')
