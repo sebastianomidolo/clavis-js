@@ -381,6 +381,41 @@ function CatalogRecord() {
 
 function AuthorityEditPage() {
     init_clavisbct();
+
+
+    var authtype=jQuery('#ctl0_Main_AuthEdit_AuthorityTypeList').val();
+    if(authtype=='P' || authtype=='E') {
+	var auth=encodeURI(jQuery('#ctl0_Main_AuthEdit_ISBD').text().replace('*','','g'));
+	var target=jQuery('#ctl0_Main_AuthEdit_ISBD');
+	var url="http://opac.sbn.it/opacsbn/opaclib?saveparams=true&db=solr_iccu&select_db=solr_iccu&from=1&searchForm=opac%2Ficcu%2Fbase.jsp&resultForward=opac%2Ficcu%2Fbrief.jsp&do_cmd=search_show_cmd&ricerca=base&change_cmd=AE&item_nocheck%3A1003%3AAutore=__AUTHORNAME__";
+	var linktext = 'OPAC SBN nazionale';
+	target.append(' ');
+	url=url.sub('__AUTHORNAME__',auth);
+
+	// jQuery('<a/>', {
+	//     href: url,
+	//     title: 'Vedi lista autori in opac.sbn.it...',
+	//     target: '_blank',
+	//     text: linktext
+	// }).appendTo(target);
+
+	jQuery('<a/>', {
+	    href: '#',
+	    onclick: "jQuery('#Iccu').toggle()",
+	    title: '[mostra/nascondi lista autori da opac.sbn.it]',
+	    text: linktext
+	}).appendTo(target);
+
+
+	target=jQuery('#ctl0_Main_AuthEdit_SpecDefault');
+	jQuery('<iframe/>', {
+	    src: url,
+	    id: 'Iccu',
+	    width: target.width()-24 + 'px',
+	    height: '1200px'
+	}).appendTo(target);
+    }
+
     if(getParameterByName('id')!='') return;
     if(jQuery('#ctl0_Main_AuthEdit_AuthorityTypeList').val()=='C') {
 	jQuery('#ctl0_Main_AuthEdit_ClassCode').val(getParameterByName('Title'));
