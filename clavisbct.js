@@ -365,6 +365,7 @@ function CatalogRecord() {
 	UltimoFascicolo('w');
 
 	jQuery("#Popup").load(function(){
+	    // alert('Popup caricato');
 	    jQuery("#Popup").contents().find('select').val('issue');
 	    var myval=jQuery("#Popup").contents().find('select').val();
 	    if (myval!='issue') {
@@ -388,6 +389,8 @@ function AuthorityEditPage() {
 	var auth=encodeURI(jQuery('#ctl0_Main_AuthEdit_ISBD').text().replace('*','','g'));
 	var target=jQuery('#ctl0_Main_AuthEdit_ISBD');
 	var url="http://opac.sbn.it/opacsbn/opaclib?saveparams=true&db=solr_iccu&select_db=solr_iccu&from=1&searchForm=opac%2Ficcu%2Fbase.jsp&resultForward=opac%2Ficcu%2Fbrief.jsp&do_cmd=search_show_cmd&ricerca=base&change_cmd=AE&item_nocheck%3A1003%3AAutore=__AUTHORNAME__";
+	// var url="http://opac.sbn.it/opacsbn/opaclib?saveparams=true&db=solr_iccu&select_db=solr_iccu&from=1&searchForm=opac%2Ficcu%2Fbase.jsp&resultForward=opac%2Ficcu%2Fbrief.jsp&do_cmd=search_show_cmd&ricerca=antico&change_cmd=AE&item_nocheck%3A1003%3AAutore=__AUTHORNAME__";
+
 	var linktext = 'OPAC SBN nazionale';
 	target.append(' ');
 	url=url.sub('__AUTHORNAME__',auth);
@@ -530,11 +533,10 @@ function EditRecord() {
 function AuthorityViewPage() {
     init_clavisbct();
 
-    var url="http://opac.sbn.it/opacsbn/opaclib?db=solr_iccu&resultForward=opac/iccu/brief.jsp&from=1&nentries=10&searchForm=opac/iccu/error.jsp&do_cmd=search_show_cmd&item:5032:BID=IT%5CICCU%5C__POLO__%5C__NUMERO__"
-    var target=jQuery("#ctl0_Main_AuthViewer_ctl1_SBNBid");
     var bid=jQuery('#ctl0_Main_AuthViewer_ctl1_SBNBid').text();
-
     if(bid[3]=='V') {
+	var url="http://opac.sbn.it/opacsbn/opaclib?db=solr_iccu&resultForward=opac/iccu/brief.jsp&from=1&nentries=10&searchForm=opac/iccu/error.jsp&do_cmd=search_show_cmd&item:5032:BID=IT%5CICCU%5C__POLO__%5C__NUMERO__"
+	var target=jQuery("#ctl0_Main_AuthViewer_ctl1_SBNBid");
 	linktext = 'OPAC SBN nazionale';
 	target.append(' ');
 	url=url.sub('__POLO__',bid.substr(0,3));
@@ -544,6 +546,17 @@ function AuthorityViewPage() {
 	    title: 'Cerca su OPAC SBN nazionale...',
 	    target: '_blank',
 	    text: linktext
+	}).appendTo(target);
+	return;
+    }
+    if((jQuery('em','#ctl0_Main_AuthViewer_AuthViewer').first().text().substr(0,8)=='Soggetto') || (jQuery('em','#ctl0_Main_AuthViewer_AuthViewer').first().text().substr(0,8)=='Argoment')) {
+	var authority_id=document.location.href.split("=").reverse()[0];
+	var target=jQuery('#ctl0_Main_AuthViewer_AuthViewer');
+	var url='http://clavisbct.comperio.it/subjects/0?embedded=true&amp;clavis_authority_id=' + authority_id;
+	jQuery('<iframe/>', {
+	    src: url,
+	    width: target.width()-24 + 'px',
+	    height: '1200px'
 	}).appendTo(target);
     }
 }
@@ -777,7 +790,7 @@ function main() {
 	return BctOpacResultPage(0);
     }
 
-    alert("non trattato! " + document.location.href);
+    // alert("non trattato! " + document.location.href);
 }
 
 function getCookie(c_name)
