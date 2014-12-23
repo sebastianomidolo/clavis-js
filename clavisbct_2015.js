@@ -314,6 +314,21 @@ function CatalogRecord() {
 	    jQuery.ajax(url);
 	});
 
+	var mid=getParameterByName('manifestationId');
+	var url = bctHostPort + '/clavis_manifestations/' + mid + '/check_adabas_kardex.json';
+	jQuery.getJSON(url, function(data) {
+	    if (data['issues_in_adabas']!=undefined) {
+		var url=data['url'];
+		jQuery('<a/>', {
+		    href: url,
+		    title: 'vedi fascicoli da kardex adabas 2011...',
+		    target: '_blank',
+		    text: data['issues_in_adabas'] + ' fascicoli in kardex adabas 2011'
+		}).appendTo('#ctl0_Main_ISBD');
+	    }
+	});
+
+
 	var legami=jQuery("legend:contains('Oggetto bibliografico')").next().next();
 	legami.hide();
 	// jQuery("<b>Visualizza legami</b>").insertBefore(legami);
@@ -684,7 +699,7 @@ function main() {
 	// s.src = 'http://code.jquery.com/jquery.min.js';
 	// document.body.appendChild(s);
     } else {
-	console.log('jQuery ok: ' + typeof jQuery);
+	// console.log('jQuery ok: ' + typeof jQuery);
     }
 
     if (document.location.href.match('ItemInsertBulkPage')) {
