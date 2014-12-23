@@ -170,6 +170,19 @@ function ItemInsertPage () {
 	    // alert("modifica esemplare");	
 	}
     }
+
+    var x=getParameterByName('collocation');
+    if (x!='') {
+	jQuery("#ctl0_Main_btnGetInventoryCounter").prop("disabled", true);
+	jQuery("#ctl0_Main_Collocation").val(x.strip());
+	x=getParameterByName('section');
+	if (x!=undefined) jQuery("#ctl0_Main_Section").val(x.strip());
+	x=getParameterByName('item_title');
+	if (x!=undefined) jQuery("#ctl0_Main_ItemTitle").val(x.strip());
+	jQuery("#ctl0_Main_InventoryDate").val('');
+	jQuery("#ctl0_Main_InventorySerieId").val(getParameterByName('ser'));
+	jQuery("#ctl0_Main_InventoryNumber").val(getParameterByName('inv'));
+    }
     
 }
 
