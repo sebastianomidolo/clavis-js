@@ -280,18 +280,6 @@ function setIccuOpacLink() {
     }).appendTo('#ctl0_Main_ctl6_SBNBid');
 }
 
-
-function loadIframe(iframeName, url) {
-    var iframe = jQuery('#' + iframeName);
-    iframe.show();
-    if ( iframe.length ) {
-        iframe.attr('src',url);   
-        return false;
-    }
-    return true;
-}
-
-
 function CatalogRecord() {
     init_clavisbct();
 
