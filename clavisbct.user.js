@@ -17,12 +17,14 @@
 // @include        http://sbct.comperio.it/index.php?page=Circulation.NewLoan*
 // @include        http://sbct.comperio.it/index.php?page=Catalog.RecordList*
 // @include        http://sbct.comperio.it/index.php?page=Catalog.EditRecord*
+// @include        http://sbct.comperio.it/index.php?page=SBN.SBNBrowser*
 // @creator        Sebastiano Midolo - BCT (Biblioteche civiche torinesi)
 // @updateURL      http://456.selfip.net/clavis/clavisbct.user.js
 // @icon           http://456.selfip.net/clavis/clavisbctlogosmall.png
-// @version        0.16
+// @version        0.18
 // ==/UserScript==
 
+// lastmod  3 febbraio  2015  v. 0.18  SBN.SBNBrowser
 // lastmod  9 settembre 2013  v. 0.14  setIccuOpacLink
 // lastmod  7 febbraio  2013  v. 0.13 (scorporato da clavis gestionale)
 // lastmod  1 febbraio  2013  v. 0.12

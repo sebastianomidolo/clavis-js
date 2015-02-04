@@ -280,6 +280,18 @@ function setIccuOpacLink() {
     }).appendTo('#ctl0_Main_ctl6_SBNBid');
 }
 
+
+function loadIframe(iframeName, url) {
+    var iframe = jQuery('#' + iframeName);
+    iframe.show();
+    if ( iframe.length ) {
+        iframe.attr('src',url);   
+        return false;
+    }
+    return true;
+}
+
+
 function CatalogRecord() {
     init_clavisbct();
 
@@ -406,6 +418,43 @@ function CatalogRecord() {
     // jQuery("#ctl0_Main_AvailableItemsPanel").prev().hide();
 }
 
+function IccuAuthLink(bid) {
+    var url="http://opac.sbn.it/opacsbn/opaclib?db=solr_iccu&resultForward=opac/iccu/brief.jsp&from=1&nentries=10&searchForm=opac/iccu/error.jsp&do_cmd=search_show_cmd&item:5032:BID=IT%5CICCU%5C__POLO__%5C__NUMERO__"
+    url=url.sub('__POLO__',bid.substr(0,3));
+    return url.sub('__NUMERO__',bid.substr(3));
+}
+
+function SbnSbnBrowser() {
+    init_clavisbct();
+
+    jQuery('tbody tr','#ctl0_Main_AutBrowser_ResultGrid').filter(function(index,data) {
+	var target=jQuery('td:eq(2)',data);
+	target_text=target.text().strip();
+	target.html('');
+	var bid=jQuery('td:first',data).text().strip().substr(0,10);
+	jQuery('<a/>', {
+	    id: bid,
+	    href: IccuAuthLink(bid),
+	    title: 'Cerca ' + bid + ' su OPAC SBN nazionale',
+	    target: '_blank',
+	    onclick: 'return false;',
+	    click: (function(e){
+		openHelp(e.currentTarget.href);
+		var x=jQuery('div img','#HelpPopupDiv');
+		jQuery('div','#HelpPopupDiv').text(e.currentTarget.title);
+		jQuery('div','#HelpPopupDiv').append(x);
+	    }),
+	    text: target_text
+	}).appendTo(target,data);
+
+	if (jQuery('td:first',data).text().match('catalogo')) {
+	    return true;
+	} else {
+	    return false;
+	}
+    }).css("background-color", "#7EBC87");
+
+}
 
 function AuthorityEditPage() {
     init_clavisbct();
@@ -562,14 +611,11 @@ function AuthorityViewPage() {
 
     var bid=jQuery('#ctl0_Main_AuthViewer_ctl1_SBNBid').text();
     if(bid[3]=='V') {
-	var url="http://opac.sbn.it/opacsbn/opaclib?db=solr_iccu&resultForward=opac/iccu/brief.jsp&from=1&nentries=10&searchForm=opac/iccu/error.jsp&do_cmd=search_show_cmd&item:5032:BID=IT%5CICCU%5C__POLO__%5C__NUMERO__"
 	var target=jQuery("#ctl0_Main_AuthViewer_ctl1_SBNBid");
 	linktext = 'OPAC SBN nazionale';
 	target.append(' ');
-	url=url.sub('__POLO__',bid.substr(0,3));
-	url=url.sub('__NUMERO__',bid.substr(3));
 	jQuery('<a/>', {
-	    href: url,
+	    href: IccuAuthLink(bid),
 	    title: 'Cerca su OPAC SBN nazionale...',
 	    target: '_blank',
 	    text: linktext
@@ -800,6 +846,10 @@ function main() {
     // 5 maggio 2014
     if (document.location.href.match('Catalog.AuthorityEditPage')) {
 	return AuthorityEditPage();
+    }
+
+    if (document.location.href.match('SBN.SBNBrowser')) {
+	return SbnSbnBrowser();
     }
 
     // per opac
