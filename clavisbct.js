@@ -412,17 +412,50 @@ function IccuAuthLink(bid) {
     return url.sub('__NUMERO__',bid.substr(3));
 }
 
+function IccuOpacLink(bid) {
+    var url="http://opac.sbn.it/opacsbn/opaclib?db=solr_iccu&rpnquery=%2540attrset%2Bbib-1%2B%2540attr%2B1%253D1032%2B%2540attr%2B4%253D2%2B%2522IT%255C%255CICCU%255C%255C__POLO__%255C%255C__NUMERO__%2522&select_db=solr_iccu&nentries=1&rpnlabel=Preferiti&resultForward=opac%2Ficcu%2Ffull.jsp&searchForm=opac%2Ficcu%2Ferror.jsp&do_cmd=search_show_cmd&brief=brief&saveparams=false&&fname=none&from=1"
+    url=url.sub('__POLO__',bid.substr(0,3));
+    return url.sub('__NUMERO__',bid.substr(3));
+}
+
 function SbnSbnBrowser() {
     init_clavisbct();
 
     jQuery('tbody tr','#ctl0_Main_AutBrowser_ResultGrid').filter(function(index,data) {
 	var target=jQuery('td:eq(2)',data);
-	target_text=target.text().strip();
+	var target_text=target.text().strip();
 	target.html('');
 	var bid=jQuery('td:first',data).text().strip().substr(0,10);
 	jQuery('<a/>', {
 	    id: bid,
 	    href: IccuAuthLink(bid),
+	    title: 'Cerca ' + bid + ' su OPAC SBN nazionale',
+	    target: '_blank',
+	    onclick: 'return false;',
+	    click: (function(e){
+		openHelp(e.currentTarget.href);
+		var x=jQuery('div img','#HelpPopupDiv');
+		jQuery('div','#HelpPopupDiv').text(e.currentTarget.title);
+		jQuery('div','#HelpPopupDiv').append(x);
+	    }),
+	    text: target_text
+	}).appendTo(target,data);
+
+	if (jQuery('td:first',data).text().match('catalogo')) {
+	    return true;
+	} else {
+	    return false;
+	}
+    }).css("background-color", "#7EBC87");
+
+    jQuery('tbody tr','#ctl0_Main_DocBrowser_ResultGrid').filter(function(index,data) {
+	var target=jQuery('td:eq(0)',data);
+	var target_text=target.text().strip();
+	target.html('');
+	var bid=target_text.strip().substr(0,10);
+	jQuery('<a/>', {
+	    id: bid,
+	    href: IccuOpacLink(bid),
 	    title: 'Cerca ' + bid + ' su OPAC SBN nazionale',
 	    target: '_blank',
 	    onclick: 'return false;',
