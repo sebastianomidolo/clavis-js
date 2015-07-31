@@ -19,11 +19,12 @@
 // @include        http://sbct.comperio.it/index.php?page=Catalog.EditRecord*
 // @include        http://sbct.comperio.it/index.php?page=SBN.SBNBrowser*
 // @creator        Sebastiano Midolo - BCT (Biblioteche civiche torinesi)
-// @updateURL      http://456.selfip.net/clavis/clavisbct.user.js
-// @icon           http://456.selfip.net/clavis/clavisbctlogosmall.png
-// @version        0.18
+// @updateURL      http://bctwww.comperio.it/clavis/clavisbct.user.js
+// @icon           http://bctwww.comperio.it/clavis/clavisbctlogosmall.png
+// @version        0.19
 // ==/UserScript==
 
+// lastmod  7 maggio  2015    v. 0.19  cambio da 456.selfip.net a bctwww.comperio.it
 // lastmod  3 febbraio  2015  v. 0.18  SBN.SBNBrowser
 // lastmod  9 settembre 2013  v. 0.14  setIccuOpacLink
 // lastmod  7 febbraio  2013  v. 0.13 (scorporato da clavis gestionale)
@@ -90,7 +91,8 @@ function load_js(filepath) {
 }
 
 if (typeof unsafeWindow.jQuery != "function") {
-    load_js('http://456.selfip.net/clavis/clavisbct_with_jquery.js');
+    // load_js('http://456.selfip.net/clavis/clavisbct_with_jquery.js');
+    load_js('http://bctwww.comperio.it/clavis/clavisbct_with_jquery.js');
     // s = document.createElement('script');
     // s.src = 'http://code.jquery.com/jquery-latest.js';
     // s.src = 'http://code.jquery.com/jquery.min.js';
@@ -104,7 +106,8 @@ if (typeof unsafeWindow.jQuery != "function") {
     // document.body.removeChild(s);
     // alert('Caricato jQuery da script GM');
 } else {
-    load_js('http://456.selfip.net/clavis/clavisbct.js');
+    // load_js('http://456.selfip.net/clavis/clavisbct.js');
+    load_js('http://bctwww.comperio.it/clavis/clavisbct.js');
 }
 
 

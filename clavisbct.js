@@ -125,7 +125,7 @@ function esemplari_da_inizializzare() {
 }
 
 function catalogatori_di_libri_nuovi() {
-    return [3,4,8,9,111,184,238,317,369,376,380,408,409,410,435,448,455,456];
+    return [3,4,8,9,111,184,238,270,317,369,376,380,408,409,410,435,448,455,456,495,496,516,517,518,519,529];
 }
 
 // FC http://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id=1940535
@@ -750,7 +750,7 @@ function NewLoan() {
 
 function init_clavisbct() {
     jQuery.noConflict();
-    jQuery('#mainclavislogo').css('background-image', 'url(http://456.selfip.net/clavis/clavisbctlogosmall.png)');
+    jQuery('#mainclavislogo').css('background-image', 'url(http://bctwww.comperio.it/clavis/clavisbctlogosmall.png)');
 }
 
 // thanks to http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values
