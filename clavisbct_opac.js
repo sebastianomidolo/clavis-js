@@ -171,6 +171,16 @@ function serial_manifestation(manifestation_id,target_div) {
     });
 }
 
+function containers_info(manifestation_id,target_div) {
+    // if (username()!='sebastiano') return;
+    var url=bctHostPort + '/clavis_manifestations/' + manifestation_id + '/containers.js';
+    jQuery.ajax({
+	url: url,
+	dataType: "script"
+    });
+}
+
+
 function main() {
     jQuery('a','.nav').filter(function(){if(this.href==="http://bct.comperio.it/libroparlato/") {return true}}).attr('accesskey','2');
 
@@ -178,8 +188,10 @@ function main() {
 	adjust_multilevel_page();
 	if(jQuery('#issues').size()===1) {
 	    serial_manifestation(document.location.href.split(":").reverse()[0], jQuery('#issues'));
+	} else {
+	    containers_info(document.location.href.split(":").reverse()[0]);
 	}
-	oidomatic();
+	// oidomatic();
     }
 
     if (document.location.href.match('/libroparlato')) {
@@ -204,7 +216,7 @@ function main() {
 	    clavisbct_attachments(username());
 	}
 	if (document.location.href.match('/search')) {
-	    DngResultPage();
+	    // DngResultPage();
 	}
     } else {
 	// jQuery('.login').attr('accesskey', '1');
