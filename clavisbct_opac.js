@@ -191,7 +191,7 @@ function main() {
 	} else {
 	    containers_info(document.location.href.split(":").reverse()[0]);
 	}
-	// oidomatic();
+	oidomatic();
     }
 
     if (document.location.href.match('/libroparlato')) {

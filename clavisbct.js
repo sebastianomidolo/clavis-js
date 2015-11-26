@@ -143,6 +143,7 @@ function ItemViewPage () {
 	    }
 	}).prop("disabled", true);
     }
+    check_item_record();
 }
 
 function getLibraryId() {
@@ -226,7 +227,45 @@ function ItemInsertPage () {
 	jQuery("#ctl0_Main_InventorySerieId").val(getParameterByName('ser'));
 	jQuery("#ctl0_Main_InventoryNumber").val(getParameterByName('inv'));
     }
-    
+}
+
+function check_item_record() {
+    // alert("Utente catalogatore");
+    // Allineamento al volo con ClavisBCT...
+    var item_id=document.location.href.split("=").reverse()[0];
+    var url=bctHostPort + '/clavis_items/' + item_id + '/sync.js?';
+
+    if (jQuery('#ctl0_Main_ManifestationView_Title').size()==0) {
+	var manifestation_id=0;
+	var title=jQuery('#ctl0_Main_ItemTitle').text();
+    } else {
+	var manifestation_id=jQuery('#ctl0_Main_ManifestationView_Title')[0].href.split('=').last();
+	var title=jQuery('b','#ctl0_Main_ManifestationView_Title').html().replace(/<br>/g,". ");
+    }
+
+    var item={
+	"collocation": jQuery('#ctl0_Main_ItemView_Collocation').text(),
+	"section": jQuery('#ctl0_Main_ItemView_Section').text(),
+	"barcode": jQuery('#ctl0_Main_ItemView_Barcode').text(),
+	"rfid_code": jQuery('#ctl0_Main_ItemView_Rfid').text(),
+	"inventory_number": jQuery('#ctl0_Main_ItemView_InventoryNumber').text(),
+	"inventory_serie_id": jQuery('#ctl0_Main_ItemView_InventorySerieDescription').text(),
+	"owner_library_id": jQuery('#ctl0_Main_ItemView_OwnerLibrary')[0]['href'].split('=').last(),
+	"home_library_id": jQuery('#ctl0_Main_ItemView_HomeLibrary')[0]['href'].split('=').last(),
+	"actual_library_id": jQuery('#ctl0_Main_ItemView_ActualLibrary')[0]['href'].split('=').last(),
+	"manifestation_id": manifestation_id,
+	"title": title,
+	"custom_field3": 'Allineamento provvisorio ClavisBCT'
+    };
+    jQuery.each(item, function(key, value) {
+	url += 'i[' + key + ']=' + value + '&';
+    });
+    url=encodeURI(url);
+    // console.log(url);
+    jQuery.ajax({
+	url: url,
+	dataType: "script"
+    });
 }
 
 function getOperatorId() {
