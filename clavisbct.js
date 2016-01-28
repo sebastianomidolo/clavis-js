@@ -125,7 +125,7 @@ function esemplari_da_inizializzare() {
 }
 
 function catalogatori_di_libri_nuovi() {
-    return [3,4,8,9,111,184,238,270,317,369,376,380,408,409,410,435,448,455,456,495,496,516,517,518,519,529];
+    return [3,4,8,9,111,184,238,270,317,369,376,380,408,409,410,435,448,455,456,495,496,506,516,517,518,519,529,561];
 }
 
 // FC http://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id=1940535
@@ -143,7 +143,9 @@ function ItemViewPage () {
 	    }
 	}).prop("disabled", true);
     }
-    check_item_record();
+    var item_id=document.location.href.split("=").reverse()[0];
+    item_info(item_id);
+    check_item_record(item_id);
 }
 
 function getLibraryId() {
@@ -229,10 +231,9 @@ function ItemInsertPage () {
     }
 }
 
-function check_item_record() {
+function check_item_record(item_id) {
     // alert("Utente catalogatore");
     // Allineamento al volo con ClavisBCT...
-    var item_id=document.location.href.split("=").reverse()[0];
     var url=bctHostPort + '/clavis_items/' + item_id + '/sync.js?';
 
     if (jQuery('#ctl0_Main_ManifestationView_Title').size()==0) {
@@ -262,6 +263,16 @@ function check_item_record() {
     });
     url=encodeURI(url);
     // console.log(url);
+    jQuery.ajax({
+	url: url,
+	dataType: "script"
+    });
+}
+
+function item_info(item_id) {
+    var url=bctHostPort + '/clavis_items/' + item_id + '/info.js?';
+    url=encodeURI(url);
+    console.log(url);
     jQuery.ajax({
 	url: url,
 	dataType: "script"
