@@ -125,7 +125,7 @@ function esemplari_da_inizializzare() {
 }
 
 function catalogatori_di_libri_nuovi() {
-    return [3,4,8,9,111,184,238,270,317,369,376,380,408,409,410,435,448,455,456,495,496,506,516,517,518,519,529,561];
+    return [3,4,8,9,111,184,238,270,317,330,335,369,376,380,387,408,409,410,435,448,455,456,495,496,506,516,517,518,519,529,561,584];
 }
 
 // FC http://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id=1940535
@@ -155,7 +155,6 @@ function getLibraryId() {
 function getLibraryName() {
     return jQuery("#ctl0_Footer_LibrarianLibraries option:selected").text();
 }
-
 
 function ItemInsertPage () {
     init_clavisbct();
@@ -229,6 +228,11 @@ function ItemInsertPage () {
 	jQuery("#ctl0_Main_InventorySerieId").val(getParameterByName('ser'));
 	jQuery("#ctl0_Main_InventoryNumber").val(getParameterByName('inv'));
     }
+
+    if (getParameterByName('bctricolloca')=='1') {
+	var item_id=document.location.href.split("=").reverse()[0];
+	ricolloca_forse(item_id);
+    }
 }
 
 function check_item_record(item_id) {
@@ -247,6 +251,8 @@ function check_item_record(item_id) {
     var item={
 	"collocation": jQuery('#ctl0_Main_ItemView_Collocation').text(),
 	"section": jQuery('#ctl0_Main_ItemView_Section').text(),
+	"item_status": jQuery('#ctl0_Main_ItemView_ItemStatus').text(),
+	"loan_status": jQuery('#ctl0_Main_ItemView_LoanStatusString').text(),
 	"barcode": jQuery('#ctl0_Main_ItemView_Barcode').text(),
 	"rfid_code": jQuery('#ctl0_Main_ItemView_Rfid').text(),
 	"inventory_number": jQuery('#ctl0_Main_ItemView_InventoryNumber').text(),
@@ -256,6 +262,7 @@ function check_item_record(item_id) {
 	"actual_library_id": jQuery('#ctl0_Main_ItemView_ActualLibrary')[0]['href'].split('=').last(),
 	"manifestation_id": manifestation_id,
 	"title": title,
+	"custom_field1": jQuery('#ctl0_Main_ItemView_ItemCustomfield1').text(),
 	"custom_field3": 'Allineamento provvisorio ClavisBCT'
     };
     jQuery.each(item, function(key, value) {
@@ -276,6 +283,48 @@ function item_info(item_id) {
     jQuery.ajax({
 	url: url,
 	dataType: "script"
+    });
+}
+
+function ricolloca_forse(item_id) {
+    var url=bctHostPort + '/open_shelf_items/' + item_id + '.json?';
+
+    jQuery('<b/>', {
+	style: "color: red",
+	text: 'ATTENZIONE: ricollocazione. Verificare i dati prima di salvare! '
+    }).appendTo('#ctl0_Main_ManifestationView_ManifestationViewPanel');
+    jQuery('<a/>', {
+	href: url,
+	title: 'Controllo fonte dati...',
+	target: '_blank',
+	text: '(click qui per verificare i dati alla fonte)'
+    }).appendTo('#ctl0_Main_ManifestationView_ManifestationViewPanel');
+
+
+    // Non è opportuno rendere visibile in Opac e prestabile in questa fase, quindi commento 
+    // le due linee seguenti:
+    jQuery("#ctl0_Main_OpacVisible").prop('checked',true);
+    jQuery("#ctl0_Main_LoanClass").val('B');
+
+    url=encodeURI(url);
+    jQuery.getJSON(url, function(d) {
+	var x=d.os_section;
+	if (x!=undefined) jQuery("#ctl0_Main_Section").val(x.strip());
+	x=d.scaffale_aperto;
+	if (x!=undefined) {
+	    jQuery("#ctl0_Main_Collocation").val(x.strip());
+	    jQuery("#ctl0_Main_Specification").val('');
+	}
+	x=d.magazzino;
+	if (x!=undefined) {
+	    var tg=jQuery("#ctl0_Main_Custom1");
+	    if (tg.val().length < 3 ) {
+		tg.val("Ex " + x.strip());
+	    } else {
+		tg.val("Ex " + x.strip() + ". - " + tg.val());
+	    }
+	    // jQuery("#ctl0_Main_Custom1").val("Ex " + x.strip());
+	}
     });
 }
 
@@ -587,9 +636,20 @@ function AuthorityList() {
     });
 }
 
+function sbianca_nuova_notizia() {
+    if (jQuery('#ctl0_Main_ISBD').text()=="Nuova notizia") {
+	jQuery('#ctl0_Main_ISBD').text('')
+    }
+    if (jQuery('#ctl0_Main_F200').text()=="*Nuova notizia") {
+	jQuery('#ctl0_Main_F200').text('');
+	jQuery('#ctl0_Main_F102a').val('it');
+    }
+}
 
 function EditRecord() {
     init_clavisbct();
+
+    sbianca_nuova_notizia();
 
     var myTimerId = 0;
 
@@ -674,9 +734,35 @@ function EditRecord() {
 //    jQuery('#ctl0_Main_TabAuthority_0').click(function() {
 //	alert('x');
 //    }
-
 }
 
+function NewRecord() {
+    init_clavisbct();
+    var links = {
+	'SBN' : 'http://opac.sbn.it/opacsbn/opac/iccu/avanzata.jsp',
+	'British Library (UK)' : 'http://explore.bl.uk/primo_library/libweb/action/search.do?mode=Advanced&ct=AdvancedSearch&dscnt=0&fromLogin=true&vid=BLVU1',
+	'Library of Congress (Usa)' : 'https://catalog.loc.gov/vwebv/searchAdvanced',
+	'BNF (Francia)' : 'http://catalogue.bnf.fr/recherche-avancee.do?pageRech=rav',
+	'GBV (Germania)' : 'http://gso.gbv.de/DB=2.1/ADVANCED_SEARCHFILTER',
+	'BNE (Spagna)' : 'http://catalogo.bne.es/uhtbin/webcat',
+	'Abes/Sudoc (Francia)' : 'http://www.sudoc.abes.fr/DB=2.1/ADVANCED_SEARCHFILTER',
+	'Cobiss (Slovenia)' : 'http://www.cobiss.si/scripts/cobiss?ukaz=getid&lani=en'
+    }
+    jQuery('label','#ctl0_Main_ctl0').filter(function(index) {
+	var txt=jQuery(this).text().trim();
+	if(typeof links[txt] !== 'undefined') {
+	    var lnk=jQuery('<a/>', {
+		href: links[txt],
+		title: 'Link diretto a ' + txt,
+		target: '_blank',
+		text: txt
+	    });
+	    jQuery(this).html(lnk);
+	    return true;
+	}
+    });
+}
+    
 function AuthorityViewPage() {
     init_clavisbct();
 
@@ -917,6 +1003,11 @@ function main() {
     // 5 maggio 2014
     if (document.location.href.match('Catalog.AuthorityEditPage')) {
 	return AuthorityEditPage();
+    }
+
+    // 2 agosto 2016
+    if (document.location.href.match('Catalog.NewRecord')) {
+	return NewRecord();
     }
 
     if (document.location.href.match('SBN.SBNBrowser')) {
