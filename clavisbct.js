@@ -111,7 +111,19 @@ function ItemInsertBulkPage() {
 	jQuery("#ctl0_Main_InputGrid_ctl0_LoanClassMaster").val('A');
 	applyDropDownMaster('loanClassClass',document.getElementById("ctl0_Main_InputGrid_ctl0_LoanClassMaster"));
     }
-
+    // Riordino sezioni di collocazione
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(1)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(2)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(3)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(4)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(5)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(6)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(7)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(8)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(13)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(10)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(14)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(11)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(15)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(12)'));
+ 
 }
 
 function esemplari_da_inizializzare() {
@@ -125,7 +137,7 @@ function esemplari_da_inizializzare() {
 }
 
 function catalogatori_di_libri_nuovi() {
-    return [3,4,8,9,111,184,238,270,317,330,335,369,376,380,387,408,409,410,435,448,455,456,495,496,506,516,517,518,519,529,561,584];
+    return [3,4,8,9,111,184,238,270,317,330,335,369,376,380,387,408,409,410,435,448,455,456,457,495,496,506,516,517,518,519,529,561,584,625];
 }
 
 // FC http://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id=1940535
@@ -232,6 +244,21 @@ function ItemInsertPage () {
     if (getParameterByName('bctricolloca')=='1') {
 	var item_id=document.location.href.split("=").reverse()[0];
 	ricolloca_forse(item_id);
+    }
+
+    // Solo per gli esemplari della Civica centrale (biblioteca 2)
+    if (jQuery('#ctl0_Main_HomeLibraryHid').val()=="2") {
+	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(2)'));
+	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(3)'));
+	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(4)'));
+	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(5)'));
+	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(6)'));
+	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(7)'));
+	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(8)'));
+	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(9)'));
+	jQuery('#ctl0_Main_Section option:eq(14)').insertBefore(jQuery('#ctl0_Main_Section option:eq(11)'));
+	jQuery('#ctl0_Main_Section option:eq(15)').insertBefore(jQuery('#ctl0_Main_Section option:eq(12)'));
+	jQuery('#ctl0_Main_Section option:eq(16)').insertBefore(jQuery('#ctl0_Main_Section option:eq(13)'));
     }
 }
 
