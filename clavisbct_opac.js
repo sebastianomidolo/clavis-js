@@ -180,6 +180,93 @@ function containers_info(manifestation_id,target_div) {
     });
 }
 
+function manage_closed_stack_requests(opac_user, target_div) {
+    // alert("Richieste a magazzino di " + opac_user);
+    var tdiv=target_div.attr('id');
+    var url=bctHostPort + '/closed_stack_item_requests/check.js?dng_user=' + opac_user + '&target_div=' + tdiv;
+    // jQuery(target_div).html(url);
+    jQuery.ajax({
+     	url: url,
+     	dataType: "script",
+	success: function(res, textStatus, jqXHR) {
+	    var t=jQuery('#print_request_tag');
+	    t.addClass('btn btn-success');
+	    t.one('click', function () {
+		if( !confirm("Confermi la richiesta dei libri a magazzino?")) {
+		    return false;
+		}
+		alert("Invio richiesta al magazzino");
+	    });
+	}
+    });
+}
+
+function closed_stack_item_request(opac_user, manifestation_id) {
+    var request_count=0
+    jQuery('.table tbody tr','#items').each(function( index ) {
+	biblioteca=jQuery('td:nth-child(1)', this).text().trim();
+	item_status=jQuery('td:nth-child(4)', this).text().trim();
+
+	if (biblioteca=="01 - Civica centrale" && item_status=="Su scaffale") {
+	    var collocazione=jQuery('td:nth-child(2)', this).text().trim();
+	    var inventario=jQuery('td:nth-child(3)', this).text().trim();
+
+	    console.log("Biblioteca: " + biblioteca);
+	    console.log("Collocazione: " + collocazione);
+	    console.log("Inventario: " + inventario);
+	    var myelem = jQuery('td:nth-child(2)', this);
+	    myelem.addClass('btn btn-success');
+	    myelem.attr('title', 'richiedi ' + collocazione + ' a magazzino ' + inventario);
+	    request_count++;
+	    myelem.attr('id', 'request_id_' + request_count);
+	    myelem.attr('data-collocazione', collocazione);
+	    myelem.attr('data-inventario', inventario);
+	    myelem.attr('data-manifestation_id', manifestation_id);
+
+	    jQuery('#request_id_' + request_count).on("click", function () {
+		var collocazione = jQuery(this).attr('data-collocazione');
+		var inventario = jQuery(this).attr('data-inventario');
+		var manifestation_id = jQuery(this).attr('data-manifestation_id');
+		if(collocazione.match(/^CC/)!=null) {
+		    alert("Il libro si trova al secondo piano, nella Sala a scaffale aperto");
+		    return false;
+		}
+		if( !confirm("Vuoi richiedere l'esemplare con collocazione " + collocazione + '?')) {
+		    return false;
+		}
+		jQuery('#request_id_' + request_count).off("click");
+		jQuery.ajax({
+		    type: 'POST',
+		    url: 'http://clavisbct.comperio.it/clavis_items/closed_stack_item_request',
+		    dataType: 'json',
+		    data: {collocazione:collocazione,inventario:inventario,library_id:2,
+			   manifestation_id:manifestation_id,dng_user:opac_user},
+		    async: true,
+		    beforeSend: function(jqXHR, settings) {
+			var bottone=jQuery('#request_id_' + request_count);
+			bottone.removeClass('btn-success');
+			bottone.addClass('btn-info');
+		    },
+		    error: function(jqXHR, textStatus, errorThrown) {
+			// da gestire in qualche modo
+		    },
+		    success: function(res, textStatus, jqXHR) {
+			// alert("Tornato: " + res.requests);
+			// alert(request_count);
+			var bottone=jQuery('#request_id_' + request_count);
+			myvar=res;
+			bottone.removeClass('btn btn-info');
+			bottone.attr('title', res['msg']);
+			var t = bottone.text().trim() + '<br/>' + res['msg'];
+			t += '<br/><a href="/mydiscovery#loans_active">Vedi richieste pendenti</a>';
+			bottone.html(t);
+			bottone.off("click");
+		    }
+		});
+	    });
+	}
+    });
+}
 
 function main() {
     jQuery('a','.nav').filter(function(){if(this.href==="http://bct.comperio.it/libroparlato/") {return true}}).attr('accesskey','2');
@@ -191,7 +278,8 @@ function main() {
 	} else {
 	    containers_info(document.location.href.split(":").reverse()[0]);
 	}
-	oidomatic();
+	// commentato 5 aprile 2017 (non sembra che sia molto utile, a oggi, usare oidomatic)
+	// oidomatic();
     }
 
     if (document.location.href.match('/libroparlato')) {
@@ -210,7 +298,15 @@ function main() {
 
     if (logged_in()==true) {
 	if (username()=='sebastiano') {
+	    altravar='user logged in';
 	    // insert_jquery_cookie_plugin();
+	    if (document.location.href.match('http://bct.comperio.it/opac/detail/view/sbct:catalog:')) {
+		closed_stack_item_request(username(), document.location.href.split(":").reverse()[0]);
+	    }
+	    if (document.location.href.match('http://bct.comperio.it/mydiscovery#loans_active')) {
+		jQuery('h3:first','#loans_active').before("<div id='closed_stack_requests'></div>");
+		manage_closed_stack_requests(username(), jQuery('#closed_stack_requests'));
+	    }
 	}
 	if (document.location.href.match('http://bct.comperio.it/opac/detail/view/sbct:catalog:')) {
 	    clavisbct_attachments(username());
@@ -252,9 +348,10 @@ function main() {
 }
 
 jQuery(document).ready(function() {
-    jQuery.noConflict();
+    // jQuery.noConflict();
     jQuery('a.logo','.mainHeader').attr('href','http://www.comune.torino.it/cultura/biblioteche/');
     jQuery('a.logo','.mainHeader').attr('title','Sito web delle Biblioteche civiche torinesi');
-    inserisci_legenda_per_screen_reader();
+    // inserisci_legenda_per_screen_reader(); // eliminato aprile 2017a
     main();
+    signal_var='sono in clavisbct_opac 4';
 });
