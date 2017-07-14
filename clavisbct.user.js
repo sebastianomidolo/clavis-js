@@ -20,6 +20,7 @@
 // @include        http://sbct.comperio.it/index.php?page=Catalog.NewRecord*
 // @include        http://sbct.comperio.it/index.php?page=SBN.SBNBrowser*
 // @creator        Sebastiano Midolo - BCT (Biblioteche civiche torinesi)
+// @author         Sebastiano Midolo
 // @updateURL      http://bctwww.comperio.it/clavis/clavisbct.user.js
 // @icon           http://bctwww.comperio.it/clavis/clavisbctlogosmall.png
 // @version        0.20
