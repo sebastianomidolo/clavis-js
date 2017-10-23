@@ -8,7 +8,8 @@
 // lastmod 27 maggio 2013 - adattamenti a versione 4.0 dng
 // lastmod 11 maggio 2013
 
-bctHostPort='http://clavisbct.comperio.it';
+// https da 27 settembre 2017
+bctHostPort='https://clavisbct.comperio.it';
 
 /*
 CryptoJS v3.1.2
@@ -59,12 +60,12 @@ function oidomatic() {
     newdiv.setAttribute('style','text-align: left; color: black; padding: 2px; font-size: 120%; border: 0px;');
     newdiv.setAttribute('id','oidomaticdiv');
 
-    var text='<img src="http://oidomatic.comperio.it/images/indicator.gif">';
+    var text='<img src="https://oidomatic.comperio.it/images/indicator.gif">';
     newdiv.innerHTML='<hr/><p style="margin-left: 0px;">Cerco in altre biblioteche piemontesi...' + text + '</p>';
     target.appendChild(newdiv);
     var s = document.createElement('script');
     // s.src = 'http://oidomatic.webhop.net/getinfo.js?qm=js&href=' + encodeURIComponent(document.location['href']);
-    s.src = 'http://oidomatic.comperio.it/getinfo.js?reqsource=clavisbct&href=' + encodeURIComponent(document.location['href']);
+    s.src = 'https://oidomatic.comperio.it/getinfo.js?reqsource=clavisbct&href=' + encodeURIComponent(document.location['href']);
     document.body.appendChild(s);
     // document.body.removeChild(s); (non funziona su IE)
 }
@@ -72,7 +73,7 @@ function oidomatic() {
 function clavisbct_attachments(username) {
     var mid=document.location.href.split(":").reverse()[0].split('#')[0];
     var url=bctHostPort + '/clavis_manifestations/' + mid + '/attachments.js?dng_user=' + username;
-    jQuery('li','.circ').last().after('<li id="attachments_tab"><a href="#" data-target="#attachments" data-toggle="tab"><img src="http://oidomatic.comperio.it/images/indicator.gif"></a></li>');
+    jQuery('li','.circ').last().after('<li id="attachments_tab"><a href="#" data-target="#attachments" data-toggle="tab"><img src="https://oidomatic.comperio.it/images/indicator.gif"></a></li>');
     jQuery('#accordion').children().first().before('<div class="hidden panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-target="#attachments">Allegati</a></h4></div><div id="attachments" class="panel-collapse in"><div class="panel-body detail"></div></div></div>');
     jQuery.ajax({
 	url: url,
@@ -87,7 +88,7 @@ function user_login_on_clavisbct(user,password) {
     var ip='';
     jQuery.ajax({
 	type: 'GET',
-	url: 'http://clavisbct.comperio.it/jsonip' + '?' + 'user=' + user,
+	url: 'https://clavisbct.comperio.it/jsonip' + '?' + 'user=' + user,
 	dataType: 'json',
 	success: function(res) {
 	    ip=res.ip;
@@ -133,9 +134,10 @@ function DngResultPage() {
     });
 }
 
+// non usata al settembre 2017
 function insert_jquery_cookie_plugin() {
     var s = document.createElement('script');
-    s.src = 'http://clavisbct.comperio.it/assets/jquery.cookie.js';
+    s.src = 'https://clavisbct.comperio.it/assets/jquery.cookie.js';
     document.body.appendChild(s);
 }
 
@@ -237,7 +239,7 @@ function closed_stack_item_request(opac_user, manifestation_id) {
 		jQuery('#request_id_' + request_count).off("click");
 		jQuery.ajax({
 		    type: 'POST',
-		    url: 'http://clavisbct.comperio.it/clavis_items/closed_stack_item_request',
+		    url: 'https://clavisbct.comperio.it/clavis_items/closed_stack_item_request',
 		    dataType: 'json',
 		    data: {collocazione:collocazione,inventario:inventario,library_id:2,
 			   manifestation_id:manifestation_id,dng_user:opac_user},
@@ -269,7 +271,7 @@ function closed_stack_item_request(opac_user, manifestation_id) {
 }
 
 function main() {
-    jQuery('a','.nav').filter(function(){if(this.href==="http://bct.comperio.it/libroparlato/") {return true}}).attr('accesskey','2');
+    jQuery('a','.nav').filter(function(){if(this.href==="https://bct.comperio.it/libroparlato/") {return true}}).attr('accesskey','2');
 
     if (document.location.href.match('/opac/detail/view/sbct:catalog:')) {
 	adjust_multilevel_page();
@@ -283,10 +285,10 @@ function main() {
     }
 
     if (document.location.href.match('/libroparlato')) {
-	jQuery('a').show().filter(function(){if(this.href==="http://bct.comperio.it/libroparlato/libroparlato-search/advancedsearch") {return true}}).hide();
+	jQuery('a').show().filter(function(){if(this.href==="https://bct.comperio.it/libroparlato/libroparlato-search/advancedsearch") {return true}}).hide();
     }
 
-    if (document.location.href.match('http://bct.comperio.it/opac/detail/view/sbct:catalog:15973')) {
+    if (document.location.href.match('https://bct.comperio.it/opac/detail/view/sbct:catalog:15973')) {
 	// qualcosa
     }
 
@@ -300,15 +302,15 @@ function main() {
 	if (username()=='sebastiano') {
 	    altravar='user logged in';
 	    // insert_jquery_cookie_plugin();
-	    if (document.location.href.match('http://bct.comperio.it/opac/detail/view/sbct:catalog:')) {
+	    if (document.location.href.match('https://bct.comperio.it/opac/detail/view/sbct:catalog:')) {
 		closed_stack_item_request(username(), document.location.href.split(":").reverse()[0]);
 	    }
-	    if (document.location.href.match('http://bct.comperio.it/mydiscovery#loans_active')) {
+	    if (document.location.href.match('https://bct.comperio.it/mydiscovery#loans_active')) {
 		jQuery('h3:first','#loans_active').before("<div id='closed_stack_requests'></div>");
 		manage_closed_stack_requests(username(), jQuery('#closed_stack_requests'));
 	    }
 	}
-	if (document.location.href.match('http://bct.comperio.it/opac/detail/view/sbct:catalog:')) {
+	if (document.location.href.match('https://bct.comperio.it/opac/detail/view/sbct:catalog:')) {
 	    clavisbct_attachments(username());
 	}
 	if (document.location.href.match('/search')) {
@@ -351,7 +353,7 @@ jQuery(document).ready(function() {
     // jQuery.noConflict();
     jQuery('a.logo','.mainHeader').attr('href','http://www.comune.torino.it/cultura/biblioteche/');
     jQuery('a.logo','.mainHeader').attr('title','Sito web delle Biblioteche civiche torinesi');
-    // inserisci_legenda_per_screen_reader(); // eliminato aprile 2017a
+    // inserisci_legenda_per_screen_reader(); // eliminato aprile 2017
     main();
     signal_var='sono in clavisbct_opac 4';
 });

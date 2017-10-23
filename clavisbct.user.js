@@ -4,6 +4,24 @@
 // @description    Integratore BCT per Clavis
 // @grant          GM_getValue
 // @grant          GM_setValue
+// @include        https://sbct.comperio.it/index.php?page=Catalog.Record&manifestationId*
+// @include        https://sbct.comperio.it/index.php?page=Catalog.ItemInsertBulkPage*
+// @include        https://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id*
+// @include        https://sbct.comperio.it/index.php?page=Catalog.ItemInsertPage*
+// @include        https://sbct.comperio.it/index.php?page=Catalog.AuthorityList*
+// @include        https://sbct.comperio.it/index.php?page=Catalog.AuthorityViewPage*
+// @include        https://sbct.comperio.it/index.php?page=Catalog.AuthorityEditPage*
+// @include        https://bct.comperio.it/opac/detail/view/sbct:catalog:*
+// @include        https://bct.comperio.it/libroparlato/search*
+// @include        https://bct.comperio.it/opac/search*
+// @include        https://sbct.comperio.it/index.php?page=Circulation.NewLoan*
+// @include        https://sbct.comperio.it/index.php?page=Catalog.RecordList*
+// @include        https://sbct.comperio.it/index.php?page=Catalog.EditRecord*
+// @include        https://sbct.comperio.it/index.php?page=Catalog.NewRecord*
+// @include        https://sbct.comperio.it/index.php?page=SBN.SBNBrowser*
+// @include        https://sbct.comperio.it/index.php?page=Circulation.ManageRequests
+// @include        https://sbct.comperio.it/index.php?page=Circulation.ReservationList
+
 // @include        http://sbct.comperio.it/index.php?page=Catalog.Record&manifestationId*
 // @include        http://sbct.comperio.it/index.php?page=Catalog.ItemInsertBulkPage*
 // @include        http://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id*
@@ -19,13 +37,20 @@
 // @include        http://sbct.comperio.it/index.php?page=Catalog.EditRecord*
 // @include        http://sbct.comperio.it/index.php?page=Catalog.NewRecord*
 // @include        http://sbct.comperio.it/index.php?page=SBN.SBNBrowser*
+// @include        http://sbct.comperio.it/index.php?page=Circulation.ManageRequests
+// @include        http://sbct.comperio.it/index.php?page=Circulation.ReservationList
+
 // @creator        Sebastiano Midolo - BCT (Biblioteche civiche torinesi)
 // @author         Sebastiano Midolo
 // @updateURL      http://bctwww.comperio.it/clavis/clavisbct.user.js
 // @icon           http://bctwww.comperio.it/clavis/clavisbctlogosmall.png
-// @version        0.20
+// @version        0.24
 // ==/UserScript==
 
+// lastmod 27 settembre 2017    v. 0.24 ClavisBCT passa a https
+// lastmod 23 agosto  2017    v. 0.23 Clavis passa a https
+// lastmod 21 luglio  2017    v. 0.22 Circulation.ReservationList
+// lastmod 14 luglio  2017    v. 0.21 Circulation.ManageRequests
 // lastmod  2 agosto  2016    v. 0.20 http://sbct.comperio.it/index.php?page=Catalog.NewRecord
 // lastmod  7 maggio  2015    v. 0.19  cambio da 456.selfip.net a bctwww.comperio.it
 // lastmod  3 febbraio  2015  v. 0.18  SBN.SBNBrowser
@@ -95,7 +120,7 @@ function load_js(filepath) {
 
 if (typeof unsafeWindow.jQuery != "function") {
     // load_js('http://456.selfip.net/clavis/clavisbct_with_jquery.js');
-    load_js('http://bctwww.comperio.it/clavis/clavisbct_with_jquery.js');
+    load_js('https://bctwww.comperio.it/clavis/clavisbct_with_jquery.js');
     // s = document.createElement('script');
     // s.src = 'http://code.jquery.com/jquery-latest.js';
     // s.src = 'http://code.jquery.com/jquery.min.js';
@@ -110,7 +135,7 @@ if (typeof unsafeWindow.jQuery != "function") {
     // alert('Caricato jQuery da script GM');
 } else {
     // load_js('http://456.selfip.net/clavis/clavisbct.js');
-    load_js('http://bctwww.comperio.it/clavis/clavisbct.js');
+    load_js('https://bctwww.comperio.it/clavis/clavisbct.js');
 }
 
 
