@@ -114,17 +114,18 @@ function ItemInsertBulkPage() {
 	applyDropDownMaster('loanClassClass',document.getElementById("ctl0_Main_InputGrid_ctl0_LoanClassMaster"));
     }
     // Riordino sezioni di collocazione
-    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(1)'));
-    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(2)'));
-    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(3)'));
-    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(4)'));
-    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(5)'));
-    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(6)'));
-    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(7)'));
-    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(8)'));
-    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(13)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(10)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(1)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(2)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(3)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(4)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(5)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(6)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(7)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(8)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(9)'));
     jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(14)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(11)'));
     jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(15)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(12)'));
+    jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(16)').insertBefore(jQuery('#ctl0_Main_InputGrid_ctl1_Section option:eq(13)'));
  
 }
 
@@ -134,7 +135,9 @@ function esemplari_da_inizializzare() {
     if (catalogatori_di_libri_nuovi().include(getOperatorId())==true) {
 	return true;
     } else {
-	return false;
+	// Restituisco true in ogni caso, perché la getOperatorId() non  funziona più con v2.8.7 "Ginger" di Clavis
+	return true;
+	// return false;
     }
 }
 
@@ -142,8 +145,8 @@ function catalogatori_di_libri_nuovi() {
     return [3,4,8,9,111,184,238,270,317,330,335,369,376,380,387,408,409,410,435,448,455,456,457,495,496,501,506,516,517,518,519,529,561,584,625,633];
 }
 
-// FC http://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id=1940535
-// http://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id=54350
+// FC https://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id=1940535
+// https://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id=54350
 function ItemViewPage () {
     init_clavisbct();
 
@@ -158,7 +161,7 @@ function ItemViewPage () {
 	}).prop("disabled", true);
     }
     var item_id=document.location.href.split("=").reverse()[0];
-    item_info(item_id);
+    // item_info(item_id);
     check_item_record(item_id);
 }
 
@@ -250,17 +253,18 @@ function ItemInsertPage () {
 
     // Solo per gli esemplari della Civica centrale (biblioteca 2)
     if (jQuery('#ctl0_Main_HomeLibraryHid').val()=="2") {
-	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(2)'));
-	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(3)'));
-	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(4)'));
-	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(5)'));
-	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(6)'));
-	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(7)'));
-	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(8)'));
-	jQuery('#ctl0_Main_Section option:eq(10)').insertBefore(jQuery('#ctl0_Main_Section option:eq(9)'));
-	jQuery('#ctl0_Main_Section option:eq(14)').insertBefore(jQuery('#ctl0_Main_Section option:eq(11)'));
+	jQuery('#ctl0_Main_Section option:eq(11)').insertBefore(jQuery('#ctl0_Main_Section option:eq(2)'));
+	jQuery('#ctl0_Main_Section option:eq(11)').insertBefore(jQuery('#ctl0_Main_Section option:eq(3)'));
+	jQuery('#ctl0_Main_Section option:eq(11)').insertBefore(jQuery('#ctl0_Main_Section option:eq(4)'));
+	jQuery('#ctl0_Main_Section option:eq(11)').insertBefore(jQuery('#ctl0_Main_Section option:eq(5)'));
+	jQuery('#ctl0_Main_Section option:eq(11)').insertBefore(jQuery('#ctl0_Main_Section option:eq(6)'));
+	jQuery('#ctl0_Main_Section option:eq(11)').insertBefore(jQuery('#ctl0_Main_Section option:eq(7)'));
+	jQuery('#ctl0_Main_Section option:eq(11)').insertBefore(jQuery('#ctl0_Main_Section option:eq(8)'));
+	jQuery('#ctl0_Main_Section option:eq(11)').insertBefore(jQuery('#ctl0_Main_Section option:eq(9)'));
+	jQuery('#ctl0_Main_Section option:eq(11)').insertBefore(jQuery('#ctl0_Main_Section option:eq(10)'));
 	jQuery('#ctl0_Main_Section option:eq(15)').insertBefore(jQuery('#ctl0_Main_Section option:eq(12)'));
 	jQuery('#ctl0_Main_Section option:eq(16)').insertBefore(jQuery('#ctl0_Main_Section option:eq(13)'));
+	jQuery('#ctl0_Main_Section option:eq(17)').insertBefore(jQuery('#ctl0_Main_Section option:eq(14)'));
     }
 }
 
@@ -303,7 +307,7 @@ function check_item_record(item_id) {
 	url += 'i[' + key + ']=' + value + '&';
     });
     url=encodeURI(url);
-    // console.log(url);
+    console.log(url);
     jQuery.ajax({
 	url: url,
 	dataType: "script"
@@ -363,7 +367,10 @@ function ricolloca_forse(item_id) {
 }
 
 function getOperatorId() {
+    return true;
+    // Da modificare - non funziona più con la versione v2.8.7 "Ginger" di Clavis
     s=jQuery("#ctl0_LastSeen_UsernameLabel").attr('href');
+    // s=jQuery("ctl0_LastSeen_LibrarianSessionWidget").attr('href');
     return s.match(/id=([^&]+)/)[1];
 }
 
@@ -372,8 +379,11 @@ function utenti_che_possono_modificare_il_catalogo() {
     return [1,2];
 }
 function utente_catalogatore() {
+    // patch per fare funzionare l'estensione con la versione v2.8.7 "Ginger" di ClavisNG
+    // nella quale manca, al momento (23 ottobre 2017), l'indicazione del ruolo dell'utente connesso
+    return true;
     jQuery.noConflict();
-    s=jQuery("#ctl0_LastSeen_UsernameLabel").text();
+    var s=jQuery("#ctl0_LastSeen_UsernameLabel").text();
     if (s.match(/catalogatore|amministratore|responsabile|tecnico/i)) {
 	return true;
     } else {
@@ -392,7 +402,7 @@ function setOpacLink(manifestation_id) {
 }
 
 function setIccuOpacLink() {
-    var bid=jQuery('#ctl0_Main_ctl6_SBNBid').text();
+    var bid=jQuery('#ctl0_Main_ctl5_SBNBid').text();
     if (bid=='nessuno') return;
     var url;
 
@@ -410,7 +420,7 @@ function setIccuOpacLink() {
 	title: 'Scheda su OPAC SBN nazionale...',
 	target: '_blank',
 	text: linktext
-    }).appendTo('#ctl0_Main_ctl6_SBNBid');
+    }).appendTo('#ctl0_Main_ctl5_SBNBid');
 }
 
 function CatalogRecord() {
@@ -445,14 +455,15 @@ function CatalogRecord() {
 	// jQuery("a.formLinkButton:contains('vedi'):first", '#ctl0_Main_IssueList_IssueGrid').prop('href')
 	var year='#ctl0_Main_IssueWizard_IssueCreationWizard_SingleIssueYear';
 	if (mode=='w') {
-	    jQuery('#Popup').data('SingleIssueYear', jQuery('#ctl0_Main_IssueList_IssueGrid tbody tr:nth-child(1) td:nth-child(1)').text());
-	    // colonna descrizione - inutile: jQuery('#Popup').data('descr', jQuery('#ctl0_Main_IssueList_IssueGrid tbody tr:nth-child(1) td:nth-child(2)').text());
+	    // Nota: da febbraio 2018 la colonna con l'anno è la 2 e non la 1, quindi: td:nth-child(2)
+	    // anche le altre colonne sono spostate a destra (è stata inserita una colonna)
+	    jQuery('#Popup').data('SingleIssueYear', jQuery('#ctl0_Main_IssueList_IssueGrid tbody tr:nth-child(1) td:nth-child(2)').text());
 
-	    var x = jQuery('#ctl0_Main_IssueList_IssueGrid tbody tr:nth-child(1) td:nth-child(4)').text().trim();
+	    var x = jQuery('#ctl0_Main_IssueList_IssueGrid tbody tr:nth-child(1) td:nth-child(5)').text().trim();
 	    var i = parseInt(x) + 1;
 	    jQuery('#Popup').data('SingleStartNumber', i);
 
-	    var x=jQuery('#ctl0_Main_IssueList_IssueGrid tbody tr:nth-child(1) td:nth-child(3)').text().trim().gsub('/','-');
+	    var x=jQuery('#ctl0_Main_IssueList_IssueGrid tbody tr:nth-child(1) td:nth-child(4)').text().trim().gsub('/','-');
 	    jQuery('#Popup').data('SingleIssueDate', x);
 	    jQuery('#Popup').data('SingleEndNumber', jQuery('#Popup').data('SingleStartNumber'));
 	    jQuery('#Popup').data('SingleNumModel', 'yn');
