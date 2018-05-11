@@ -21,32 +21,20 @@
 // @include        https://sbct.comperio.it/index.php?page=SBN.SBNBrowser*
 // @include        https://sbct.comperio.it/index.php?page=Circulation.ManageRequests
 // @include        https://sbct.comperio.it/index.php?page=Circulation.ReservationList
+// @include        https://sbct.comperio.it/index.php?page=Circulation.PatronViewPage*
+// @include        https://sbct.comperio.it/index.php?page=Communication.ShelfViewPage*
 
-// @include        http://sbct.comperio.it/index.php?page=Catalog.Record&manifestationId*
-// @include        http://sbct.comperio.it/index.php?page=Catalog.ItemInsertBulkPage*
-// @include        http://sbct.comperio.it/index.php?page=Catalog.ItemViewPage&id*
-// @include        http://sbct.comperio.it/index.php?page=Catalog.ItemInsertPage*
-// @include        http://sbct.comperio.it/index.php?page=Catalog.AuthorityList*
-// @include        http://sbct.comperio.it/index.php?page=Catalog.AuthorityViewPage*
-// @include        http://sbct.comperio.it/index.php?page=Catalog.AuthorityEditPage*
-// @include        http://bct.comperio.it/opac/detail/view/sbct:catalog:*
-// @include        http://bct.comperio.it/libroparlato/search*
-// @include        http://bct.comperio.it/opac/search*
-// @include        http://sbct.comperio.it/index.php?page=Circulation.NewLoan*
-// @include        http://sbct.comperio.it/index.php?page=Catalog.RecordList*
-// @include        http://sbct.comperio.it/index.php?page=Catalog.EditRecord*
-// @include        http://sbct.comperio.it/index.php?page=Catalog.NewRecord*
-// @include        http://sbct.comperio.it/index.php?page=SBN.SBNBrowser*
-// @include        http://sbct.comperio.it/index.php?page=Circulation.ManageRequests
-// @include        http://sbct.comperio.it/index.php?page=Circulation.ReservationList
+
 
 // @creator        Sebastiano Midolo - BCT (Biblioteche civiche torinesi)
 // @author         Sebastiano Midolo
 // @updateURL      http://bctwww.comperio.it/clavis/clavisbct.user.js
 // @icon           http://bctwww.comperio.it/clavis/clavisbctlogosmall.png
-// @version        0.24
+// @version        0.26
 // ==/UserScript==
 
+// lastmod 26 marzo 2018        v. 0.26 Communication.ShelfViewPage*
+// lastmod 15 marzo 2018        v. 0.25 Circulation.PatronViewPage*
 // lastmod 27 settembre 2017    v. 0.24 ClavisBCT passa a https
 // lastmod 23 agosto  2017    v. 0.23 Clavis passa a https
 // lastmod 21 luglio  2017    v. 0.22 Circulation.ReservationList
