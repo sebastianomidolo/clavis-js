@@ -607,6 +607,36 @@ function Circulation_ManageRequests() {
     jQuery('#ctl0_Main_ImmediateLoanButton').after(link_in_gestione);
 }
 
+function Circulation_PatronViewPage() {
+    init_clavisbct();
+    console.log('In Circulation_PatronViewPage()');
+
+    var patron_id=document.location.href.split("=").reverse()[0];
+
+    var city=jQuery('#ctl0_Main_PatronView_BirthCity').text();
+    var prov=jQuery('#ctl0_Main_PatronView_BirthProvince').text();
+    
+    url=bctHostPort + '/controllo_provincia/' + city + '/' + prov + '.js?patron_id=' + patron_id;
+    url=encodeURI(url);
+    console.log(url);
+    jQuery.ajax({
+    	url: url,
+    	dataType: "script"
+    });
+
+    if (patron_id!='8959') return
+
+    url=bctHostPort + '/clavis_patrons/' + patron_id + '/print_request.pdf';
+    link=jQuery('<a/>', {
+	href: url,
+	title: 'Stampa modulo richiesta a magazzino',
+	target: '_blank',
+	text: '[Stampa richieste a magazzino]'
+    });
+    // jQuery('#rfid').after('<hr/><b>' + link + '</b>');
+    jQuery('#rfid').after(link);
+}
+
 function Circulation_ReservationList() {
     init_clavisbct();
     var item_ids='',
@@ -643,6 +673,27 @@ function Circulation_ReservationList() {
     jQuery('span','#ctl0_Main_Reservation_FoundPanel').after(link);
 }
 
+function Communication_ShelfViewPage() {
+    init_clavisbct();
+    var item_ids='',
+	url=bctHostPort + '/clavis_items?',
+	item_ids='';
+    var rows=jQuery('tr','#ctl0_Main_ShelfItemList_ShelfItemGrid');
+    jQuery('a[href*="Catalog.ItemViewPage"]',rows).filter(function(index,element) {
+	item_ids += element.href.split('=').reverse()[0] + '+';
+    });
+    if(item_ids=='') return;
+    url += 'pdf_template=rawlist&amp;per_page=999999&amp;order=collocation';
+    url += '&amp;item_ids=' + item_ids;
+    url=encodeURI(url);
+    var link=jQuery('<a/>', {
+	href: url,
+	title: 'Stampa lista esemplari di questo scaffale in ordine di collocazione',
+	target: '_blank',
+	text: ' [Lista esemplari]'
+    });
+    jQuery('#ctl0_Main_ShelfItemListPanel').before(link);
+}
 
 function SbnSbnBrowser() {
     init_clavisbct();
@@ -1138,6 +1189,12 @@ function main() {
     }
     if (document.location.href.match('Circulation.ReservationList')) {
 	return Circulation_ReservationList();
+    }
+    if (document.location.href.match('Circulation.PatronViewPage')) {
+	return Circulation_PatronViewPage();
+    }
+    if (document.location.href.match('Communication.ShelfViewPage')) {
+	return Communication_ShelfViewPage();
     }
 
     // per opac
