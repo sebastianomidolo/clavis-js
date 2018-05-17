@@ -613,16 +613,16 @@ function Circulation_PatronViewPage() {
 
     var patron_id=document.location.href.split("=").reverse()[0];
 
-    var city=jQuery('#ctl0_Main_PatronView_BirthCity').text();
-    var prov=jQuery('#ctl0_Main_PatronView_BirthProvince').text();
+    //var city=jQuery('#ctl0_Main_PatronView_BirthCity').text();
+    //var prov=jQuery('#ctl0_Main_PatronView_BirthProvince').text();
     
-    url=bctHostPort + '/controllo_provincia/' + city + '/' + prov + '.js?patron_id=' + patron_id;
-    url=encodeURI(url);
-    console.log(url);
-    jQuery.ajax({
-    	url: url,
-    	dataType: "script"
-    });
+    //url=bctHostPort + '/controllo_provincia/' + city + '/' + prov + '.js?patron_id=' + patron_id;
+    //url=encodeURI(url);
+    //console.log(url);
+    //jQuery.ajax({
+    //	url: url,
+    //	dataType: "script"
+    //});
 
     if (patron_id!='8959') return
 
