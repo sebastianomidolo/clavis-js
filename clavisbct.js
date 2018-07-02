@@ -135,9 +135,8 @@ function esemplari_da_inizializzare() {
     if (catalogatori_di_libri_nuovi().include(getOperatorId())==true) {
 	return true;
     } else {
-	// Restituisco true in ogni caso, perché la getOperatorId() non  funziona più con v2.8.7 "Ginger" di Clavis
+	// restituisce sempre true perché al momento non funziona (23 maggio 2018) 
 	return true;
-	// return false;
     }
 }
 
@@ -317,7 +316,6 @@ function check_item_record(item_id) {
 function item_info(item_id) {
     var url=bctHostPort + '/clavis_items/' + item_id + '/info.js?';
     url=encodeURI(url);
-    console.log(url);
     jQuery.ajax({
 	url: url,
 	dataType: "script"
@@ -367,11 +365,8 @@ function ricolloca_forse(item_id) {
 }
 
 function getOperatorId() {
-    return true;
-    // Da modificare - non funziona più con la versione v2.8.7 "Ginger" di Clavis
-    s=jQuery("#ctl0_LastSeen_UsernameLabel").attr('href');
-    // s=jQuery("ctl0_LastSeen_LibrarianSessionWidget").attr('href');
-    return s.match(/id=([^&]+)/)[1];
+    var s=jQuery("#ctl0_LastSeen_LibrarianSessionWidget").attr('onmouseover');
+    return Number(s.match("Page&id=(\\d)")[1]);
 }
 
 // Non usata, usare invece utente_catalogatore()
@@ -591,7 +586,6 @@ function Circulation_ManageRequests() {
     item_ids='';
     url=bctHostPort + '/clavis_items?';
     jQuery("a[onclick*='ItemEditPopup']",'#ctl0_Main_ManagedReservation_Grid').filter(function(index) {
-	myvar=this;
 	item_ids += this["title"].split('id: ').last() + '+';
     });
     url += 'item_ids=' + item_ids + '&amp;pdf_template=rawlist&amp;per_page=999999';
@@ -611,7 +605,9 @@ function Circulation_PatronViewPage() {
     init_clavisbct();
     console.log('In Circulation_PatronViewPage()');
 
-    var patron_id=document.location.href.split("=").reverse()[0];
+    patron_id=document.location.href.split("=").reverse()[0];
+    librarian_id=getOperatorId();
+
 
     //var city=jQuery('#ctl0_Main_PatronView_BirthCity').text();
     //var prov=jQuery('#ctl0_Main_PatronView_BirthProvince').text();
@@ -624,17 +620,46 @@ function Circulation_PatronViewPage() {
     //	dataType: "script"
     //});
 
-    if (patron_id!='8959') return
+    current_library_id=getLibraryId();
+    ids=[];
+    jQuery('tbody>tr',"#ctl0_Main_ItemRequestList_Grid").filter(function(index) {
+	if (jQuery('td:nth-child(7)',this).text() == '1') {
+	    destination_library=Number(jQuery('td:nth-child(4)>a',this).attr('href').split('=').last());
+	    if (current_library_id == destination_library) {
+		manifestation_id=jQuery('td:nth-child(2)>a',this).attr('href').split('=').last();
+		ids.push(manifestation_id);
+		jQuery('td:nth-child(3)',this).text('wait...');
+		jQuery('td:nth-child(3)',this).attr('id', 'row_' + manifestation_id);
+		return true;
+	    }
+	}
+    }).css("background-color", "rgb(180, 212, 71)");
 
-    url=bctHostPort + '/clavis_patrons/' + patron_id + '/print_request.pdf';
-    link=jQuery('<a/>', {
-	href: url,
-	title: 'Stampa modulo richiesta a magazzino',
-	target: '_blank',
-	text: '[Stampa richieste a magazzino]'
+    if (librarian_id!=3) return
+    
+    url=bctHostPort + '/clavis_items/find_by_home_library_id_and_manifestation_ids.json?library_id=' + current_library_id +
+	'&manifestation_ids=' + ids.join('+');
+    url=encodeURI(url);
+    console.log(url);
+
+    jQuery.getJSON(url, function(data) {
+	var len = data.length;
+	for (var i = 0; i < data.length; i++) {
+	    res = data[i];
+	    console.log(res);
+	    jQuery('#row_' + res.manifestation_id).html('<b>' + res.collocazione + '<b/><br/>' + res.piano);
+	}
     });
-    // jQuery('#rfid').after('<hr/><b>' + link + '</b>');
-    jQuery('#rfid').after(link);
+
+    //url=bctHostPort + '/clavis_patrons/' + patron_id + '/print_request.pdf';
+    //link=jQuery('<a/>', {
+    //	href: url,
+    //	title: 'Stampa modulo richiesta a magazzino',
+    //	target: '_blank',
+    //	text: '[Stampa richieste a magazzino]'
+    //   });
+    //  jQuery('#rfid').after('<hr/><b>' + link + '</b>');
+    //  jQuery('#rfid').after(link);
 }
 
 function Circulation_ReservationList() {
