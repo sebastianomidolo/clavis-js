@@ -445,6 +445,7 @@ function CatalogRecord() {
     }
 
     function UltimoFascicolo(mode) {
+	console.log("In UltimoFascicolo");
 	// estrazione issue_id ultimo fascicolo inserito:
 	// ctl0_Main_IssueList_IssueGrid
 	// jQuery("a.formLinkButton:contains('vedi'):first", '#ctl0_Main_IssueList_IssueGrid').prop('href')
@@ -487,7 +488,9 @@ function CatalogRecord() {
     }
 
     // questo solo per i periodici (da spostare poi in funzione separata):
-    if (jQuery("legend:contains('Oggetto bibliografico')").text().match("Periodici")) {
+    console.log("Sto per verificare se si tratta di un periodico...");
+    if (jQuery("legend:contains('Bibliografico')").text().match("Periodici")) {
+	console.log("Sì, è un periodico");
 	jQuery("a.formLinkButton:contains('esemplare')", '#ctl0_Main_IssueList_IssueGrid').click(function() {
             var issue_id=jQuery("a:contains('vedi')", this.parentNode).prop('href').split('=').last(),
 		mid=document.location.href.split("=").reverse()[0];
@@ -623,17 +626,19 @@ function Circulation_PatronViewPage() {
     current_library_id=getLibraryId();
     ids=[];
     jQuery('tbody>tr',"#ctl0_Main_ItemRequestList_Grid").filter(function(index) {
-	if (jQuery('td:nth-child(7)',this).text() == '1') {
-	    destination_library=Number(jQuery('td:nth-child(4)>a',this).attr('href').split('=').last());
+	if (jQuery('td:nth-child(8)',this).text() == '1') {
+	    destination_library=Number(jQuery('td:nth-child(5)>a',this).attr('href').split('=').last());
 	    if (current_library_id == destination_library) {
-		manifestation_id=jQuery('td:nth-child(2)>a',this).attr('href').split('=').last();
+		manifestation_id=jQuery('td:nth-child(3)>a',this).attr('href').split('=').last();
 		ids.push(manifestation_id);
-		jQuery('td:nth-child(3)',this).text('wait...');
-		jQuery('td:nth-child(3)',this).attr('id', 'row_' + manifestation_id);
+		jQuery('td:nth-child(4)',this).text('non presente in biblioteca');
+		// jQuery('td:nth-child(4)',this).text('row_' + manifestation_id);
+		jQuery('td:nth-child(4)',this).attr('id', 'row_' + manifestation_id);
 		return true;
 	    }
 	}
-    }).css("background-color", "rgb(180, 212, 71)");
+    // }).css("background-color", "rgb(180, 212, 71)");
+    });
 
     if (librarian_id!=3) return
     
@@ -647,7 +652,9 @@ function Circulation_PatronViewPage() {
 	for (var i = 0; i < data.length; i++) {
 	    res = data[i];
 	    console.log(res);
-	    jQuery('#row_' + res.manifestation_id).html('<b>' + res.collocazione + '<b/><br/>' + res.piano);
+	    colloc = res.collocazione
+	    jQuery('#row_' + res.manifestation_id).html('<b>' + colloc + '</b><br/>' + res.piano);
+	    jQuery('#row_' + res.manifestation_id).css("background-color", "rgb(180, 212, 71)");
 	}
     });
 
