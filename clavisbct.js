@@ -397,7 +397,7 @@ function setOpacLink(manifestation_id) {
 }
 
 function setIccuOpacLink() {
-    var bid=jQuery('#ctl0_Main_ctl5_SBNBid').text();
+    var bid=jQuery('#ctl0_Main_ctl6_SBNBid').text();
     if (bid=='nessuno') return;
     var url;
 
@@ -415,7 +415,7 @@ function setIccuOpacLink() {
 	title: 'Scheda su OPAC SBN nazionale...',
 	target: '_blank',
 	text: linktext
-    }).appendTo('#ctl0_Main_ctl5_SBNBid');
+    }).appendTo('#ctl0_Main_ctl6_SBNBid');
 }
 
 function CatalogRecord() {
@@ -608,22 +608,10 @@ function Circulation_PatronViewPage() {
     init_clavisbct();
     console.log('In Circulation_PatronViewPage()');
 
-    patron_id=document.location.href.split("=").reverse()[0];
-    librarian_id=getOperatorId();
+    var patron_id=document.location.href.split("=").reverse()[0],
+	librarian_id=getOperatorId(),
+	current_library_id=getLibraryId();
 
-
-    //var city=jQuery('#ctl0_Main_PatronView_BirthCity').text();
-    //var prov=jQuery('#ctl0_Main_PatronView_BirthProvince').text();
-    
-    //url=bctHostPort + '/controllo_provincia/' + city + '/' + prov + '.js?patron_id=' + patron_id;
-    //url=encodeURI(url);
-    //console.log(url);
-    //jQuery.ajax({
-    //	url: url,
-    //	dataType: "script"
-    //});
-
-    current_library_id=getLibraryId();
     ids=[];
     jQuery('tbody>tr',"#ctl0_Main_ItemRequestList_Grid").filter(function(index) {
 	if (jQuery('td:nth-child(8)',this).text() == '1') {
@@ -1119,6 +1107,50 @@ function NewLoan() {
     // observer.observe(target, config);
 }
 
+function Circulation_NewLoan() {
+    init_clavisbct();
+    console.log('in Circulation_NewLoan');
+    var myTimerId = 0, checkTimerId = 0, lastPatronId=undefined;
+
+    function getPatronId() {
+	var x=jQuery('#ctl0_Main_UserData table a').prop('href')
+	if (typeof(x)=="undefined") {return 0;}
+	return parseInt(x.split('=').last());
+    }
+    jQuery('<div/>', {id:'clavisbct_unique_id'}).appendTo(jQuery('table','#mainpanel')[1]);
+
+    function closed_stack_items_display() {
+	var patronId=getPatronId();
+	console.log('In closed_stack_items_display(), patron_id: ' + patronId);
+	if (patronId==0) return;
+	console.log('Invio richiesta a ClavisBCT per utente ' + patronId);
+	jQuery('#clavisbct_unique_id').html('<b>lista richieste a magazzino</b><br/>' + getPatronId());
+	// var url=bctHostPort + '/closed_stack_item_requests.js?pending=1&patron_id=' + patronId;
+	var url=bctHostPort + '/clavis_patrons/' + patronId + '.js';
+	console.log(url);
+	jQuery.ajax({
+	    url: url,
+	    dataType: "script"
+	});
+    }
+
+    function CheckPatron() {
+	// jQuery('#clavisbct_unique_id').html('<b>In attesa di risposta</b><br/>');
+	var patronId=getPatronId();
+	console.log('in CheckPatron, patronID: ' + patronId);
+	if (patronId==undefined) {return;}
+	if (patronId!=lastPatronId) {
+	    clearTimeout(myTimerId);
+	    myTimerId = setTimeout(closed_stack_items_display,1000);
+	}
+	lastPatronId = patronId;
+    }
+    CheckPatron();
+    jQuery("#ctl0_Main_CirculationData").bind('DOMSubtreeModified', function() {
+    	CheckPatron();
+    });
+}
+
 function init_clavisbct() {
     jQuery.noConflict();
     jQuery('#mainclavislogo').css('background-image', 'url(https://bctwww.comperio.it/clavis/clavisbctlogosmall.png)');
@@ -1179,6 +1211,11 @@ function main() {
     // 14 dicembre 2012
     if (document.location.href.match('Catalog.AuthorityList')) {
 	return AuthorityList();
+    }
+
+    if (document.location.href.match('Circulation.NewLoan') && getOperatorId()==3) {
+	console.log('banco prestito');
+	return Circulation_NewLoan();
     }
 
     // 17 dicembre 2012
