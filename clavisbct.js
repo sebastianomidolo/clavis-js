@@ -249,6 +249,9 @@ function ItemInsertPage () {
 	var item_id=document.location.href.split("=").reverse()[0];
 	ricolloca_forse(item_id);
     }
+    if (getParameterByName('bctricolloca')=='2') {
+	ricolloca_in();
+    }
 
     // Solo per gli esemplari della Civica centrale (biblioteca 2)
     if (jQuery('#ctl0_Main_HomeLibraryHid').val()=="2") {
@@ -362,6 +365,36 @@ function ricolloca_forse(item_id) {
 	    // jQuery("#ctl0_Main_Custom1").val("Ex " + x.strip());
 	}
     });
+}
+function compatta_collocazione() {
+    var coll=jQuery("#ctl0_Main_Section").val(),
+	ids = ["#ctl0_Main_Collocation", "#ctl0_Main_Specification", "#ctl0_Main_Sequence1", "#ctl0_Main_Sequence2"], tmp;
+    for (var i = 0; i < ids.length; i++) {
+	// console.log(ids[i]);
+	tmp=jQuery(ids[i]).val();
+	if (tmp!='') {
+	    coll += '.' + tmp.strip();
+	    jQuery(ids[i]).val('');
+	}
+    }
+    jQuery("#ctl0_Main_Section").val('BCT');
+    return coll;
+}
+
+function ricolloca_in() {
+    oldcolloc=compatta_collocazione();
+    jQuery('<b/>', {
+	style: "color: red; font-size:140%; font-weight:bold",
+	text: 'ATTENZIONE: la vecchia collocazione ' + oldcolloc + ' è stata spostata nel campo personalizzato 1'
+    }).appendTo('#ctl0_Main_ManifestationView_ManifestationViewPanel');
+    tg=jQuery("#ctl0_Main_Custom1");
+    if (tg.val().length < 3 ) {
+	tg.val("Ex " + oldcolloc);
+    } else {
+	tg.val("Ex " + oldcolloc + ". - " + tg.val());
+    }
+    jQuery("#ctl0_Main_Collocation").val('');
+    jQuery("#ctl0_Main_Collocation").focus();
 }
 
 function getOperatorId() {
