@@ -14,7 +14,6 @@
 // @include        https://bct.comperio.it/opac/detail/view/sbct:catalog:*
 // @include        https://bct.comperio.it/libroparlato/search*
 // @include        https://bct.comperio.it/opac/search*
-// @include        https://sbct.comperio.it/index.php?page=Circulation.NewLoan*
 // @include        https://sbct.comperio.it/index.php?page=Catalog.RecordList*
 // @include        https://sbct.comperio.it/index.php?page=Catalog.EditRecord*
 // @include        https://sbct.comperio.it/index.php?page=Catalog.NewRecord*

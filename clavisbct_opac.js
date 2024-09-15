@@ -1,3 +1,4 @@
+//
 // lastmod  4 luglio 2013
 // lastmod  3 luglio 2013 - user_login_on_clavisbct
 // lastmod  2 luglio 2013 - insert_jquery_cookie_plugin()
@@ -70,11 +71,23 @@ function oidomatic() {
     // document.body.removeChild(s); (non funziona su IE)
 }
 
+// Al momento (gennaio 2024) non funzionante
+function clavisbct_attachments_not_me(username, mid) {
+    // var mid=document.location.href.split(":").reverse()[0].split('#')[0];
+    var url=bctHostPort + '/clavis_manifestations/' + mid + '/attachments.js?dng_user=' + username;
+    jQuery('li','.circ').last().after('<li id="attachments_tab"><a href="#" data-target="#attachments" data-toggle="tab"><img src="https://oidomatic.comperio.it/images/indicator.gif"></a></li>');
+    // jQuery('#accordion').children().first().before('<div class="hidden panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-target="#attachments">Allegati</a></h4></div><div id="attachments" class="panel-collapse in"><div class="panel-body detail"></div></div></div>');
+    jQuery('#details').children().first().before('<div class="hidden panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-target="#attachments">Allegati</a></h4></div><div id="attachments" class="panel-collapse in"><div class="panel-body detail"></div></div></div>');
+    // alert(url);
+}
+
+
 function clavisbct_attachments(username) {
     var mid=document.location.href.split(":").reverse()[0].split('#')[0];
     var url=bctHostPort + '/clavis_manifestations/' + mid + '/attachments.js?dng_user=' + username;
-    jQuery('li','.circ').last().after('<li id="attachments_tab"><a href="#" data-target="#attachments" data-toggle="tab"><img src="https://oidomatic.comperio.it/images/indicator.gif"></a></li>');
+    // jQuery('li','.circ').last().after('<li id="attachments_tab"><a href="#" data-target="#attachments" data-toggle="tab"><img src="https://oidomatic.comperio.it/images/indicator.gif"></a></li>');
     jQuery('#accordion').children().first().before('<div class="hidden panel panel-default"><div class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-target="#attachments">Allegati</a></h4></div><div id="attachments" class="panel-collapse in"><div class="panel-body detail"></div></div></div>');
+    console.log("in clavisbct_attachments - url: " + url);
     jQuery.ajax({
 	url: url,
 	dataType: "script"
@@ -82,35 +95,27 @@ function clavisbct_attachments(username) {
 }
 
 function user_login_on_clavisbct(user,password) {
-    // var s = document.createElement('script');
-    // s.src = 'http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js';
-    // document.body.appendChild(s);
     var ip='';
+    var url = 'https://clavisbct.comperio.it/jsonip';
+    // alert("url: " + url);
+    user = user.replace(/\//g,'');
     jQuery.ajax({
-	type: 'GET',
-	url: 'https://clavisbct.comperio.it/jsonip' + '?' + 'user=' + user,
+	type: 'POST',
+	url: url,
 	dataType: 'json',
 	success: function(res) {
 	    ip=res.ip;
 	},
-	data: {},
+	data: {user:user},
 	async: false
     });
-    if (typeof CryptoJS === 'undefined') {
-	alert("CryptoJS undefined");
-	return;
-    }
     var hash = CryptoJS.SHA1(password);
-    // alert(user + " : " + hash);
-    var url=bctHostPort + '/ccu/' + user.replace(/\//g,'') + '/' + hash + '/' + CryptoJS.SHA1(ip);
-    // alert(url);
-    // jQuery.getJSON(url, function(res) {});
+    var url=bctHostPort + '/ccu/' + hash + '/' + CryptoJS.SHA1(ip)
     jQuery.ajax({
-	type: 'GET',
+	type: 'POST',
 	url: url,
 	dataType: 'json',
-	success: function() { },
-	data: {},
+	data: {user:user},
 	async: false
     });
 }
@@ -151,6 +156,8 @@ function inserisci_legenda_per_screen_reader() {
 }
 
 function adjust_multilevel_page() {
+    console.log("in adjust_multilevel_page");
+    // Non funziona più, rilevato 28 febbraio 2020
     var testo=jQuery('#items').text().match('Spiacenti, al momento');
     if(testo===null) return;
     // alert(testo);
@@ -164,29 +171,40 @@ function adjust_multilevel_page() {
     }).css("display", "none");
 }
 
-function serial_manifestation(manifestation_id,target_div) {
+// Non usata - vedi invece containers_info
+function serial_manifestation(manifestation_id) {
+    console.log("in function serial_manifestion");
+    if (jQuery('.doc-type-label.a01:contains("Serial")').text()!='') {
+	console.log("Periodico, vedo che fare");
+    }
+}
+
+function containers_info(manifestation_id) {
     // if (username()!='sebastiano') return;
-    var url=bctHostPort + '/clavis_consistency_notes/details.js?manifestation_id=' + manifestation_id;
+    var url=bctHostPort + '/clavis_manifestations/' + manifestation_id + '/containers.js?opac_username=' + username();
+    console.log("in containers_info per user " + username() + " - url: " + url);
     jQuery.ajax({
 	url: url,
 	dataType: "script"
     });
 }
 
-function containers_info(manifestation_id,target_div) {
-    // if (username()!='sebastiano') return;
-    var url=bctHostPort + '/clavis_manifestations/' + manifestation_id + '/containers.js';
-    jQuery.ajax({
-	url: url,
-	dataType: "script"
+function redir_via_sbnbid(bid) {
+    var url=bctHostPort + '/clavis_manifestations/' + bid + '/sbn_opac_redir.json';
+    console.log("in redir_via_sbnbid - url: " + url);
+    jQuery.getJSON(url, function(data) {
+	if (data.status=='ok') document.location=data.redir_url;
     });
 }
 
 function manage_closed_stack_requests(opac_user, target_div) {
+    // Decommentare il return per attivare le richieste a magazzino
+    if(opac_user!='sebastiano') return;
+
     // alert("Richieste a magazzino di " + opac_user);
     var tdiv=target_div.attr('id');
     var url=bctHostPort + '/closed_stack_item_requests/check.js?dng_user=' + opac_user + '&target_div=' + tdiv;
-    // jQuery(target_div).html(url);
+    console.log(url);
     jQuery.ajax({
      	url: url,
      	dataType: "script",
@@ -203,69 +221,631 @@ function manage_closed_stack_requests(opac_user, target_div) {
     });
 }
 
-function closed_stack_item_request(opac_user, manifestation_id) {
-    var request_count=0
+function hide_details_maybe() {
+    if (jQuery('#items').size() > 0) {
+	if (logged_in()==true) {
+	    jQuery('a',jQuery('#details').prev()).click();
+	} else {
+	    if (jQuery('li:contains("http")','#details').size() === 0) {
+		jQuery('a',jQuery('#details').prev()).click();
+	    }
+	}
+    }
+}
+
+function adjust_manifestation_details(manifestation_id) {
+    hide_details_maybe();
     jQuery('.table tbody tr','#items').each(function( index ) {
 	biblioteca=jQuery('td:nth-child(1)', this).text().trim();
 	item_status=jQuery('td:nth-child(4)', this).text().trim();
+	loan_class=jQuery('td:nth-child(5)', this).text().trim();
 
+	if (biblioteca=="15 - Primo Levi" && item_status=="Su scaffale") {
+	    var collocazione=jQuery('td:nth-child(2)', this).text().trim();
+	    var inventario=jQuery('td:nth-child(3)', this).text().trim();
+	    if(collocazione.match(/^CLA/)!=null) {
+		myvar=jQuery('td:nth-child(2)', this);
+		myvar.text(collocazione + ' Inviare email di richiesta a biblioteca.levi@comune.torino.it');
+	    }
+	}
+	if (biblioteca=="01 - Civica centrale" && item_status=="Su scaffale") {
+	    var collocazione=jQuery('td:nth-child(2)', this).text().trim();
+	    // alert(collocazione);
+	    var inventario=jQuery('td:nth-child(3)', this).text().trim();
+
+	    if(collocazione.match(/BCTA/)!=null) {
+		// alert("Questo è un BCTA");
+		if(loan_class=='Solo consultazione') {
+		    // jQuery('.not-reservable').html('Prenotabile via email <a href=\'\'>test</a>');
+		    jQuery('.not-reservable').html('Prenotabile via email');
+		    jQuery('.not-reservable').attr('data-original-title','Vedi istruzioni sotto, nella colonna Collocazione');
+		    myvar=jQuery('td:nth-child(2)', this);
+		    myvar.text(collocazione + ' Inviare email di richiesta a infobib@comune.torino.it');
+		    // myvar.text(collocazione);
+		}
+	    }
+	}
+    });
+}
+
+function closed_stack_item_request(opac_user, manifestation_id, req_button_status) {
+    // Decommentare il return per attivare le richieste a magazzino
+    if(opac_user!='sebastiano') return;
+    var request_count=0;
+    jQuery('.table tbody tr','#items').each(function( index ) {
+	biblioteca=jQuery('td:nth-child(1)', this).text().trim();
+	item_status=jQuery('td:nth-child(4)', this).text().trim();
+	loan_class=jQuery('td:nth-child(5)', this).text().trim();
+
+	if (biblioteca=="15 - Primo Levi" && item_status=="Su scaffale") {
+	    var collocazione=jQuery('td:nth-child(2)', this).text().trim();
+	    var inventario=jQuery('td:nth-child(3)', this).text().trim();
+	    if(collocazione.match(/^CLA/)!=null) {
+		// alert("Questo è un CLA");
+		myvar=jQuery('td:nth-child(2)', this);
+		myvar.text(collocazione + ' Inviare email di richiesta a biblioteca.levi@comune.torino.it');
+	    }
+	}
+	
 	if (biblioteca=="01 - Civica centrale" && item_status=="Su scaffale") {
 	    var collocazione=jQuery('td:nth-child(2)', this).text().trim();
 	    var inventario=jQuery('td:nth-child(3)', this).text().trim();
 
+	    if(collocazione.match(/BCTA/)!=null) {
+		// alert("Questo è un BCTA");
+		if(loan_class=='Solo consultazione') {
+		    // jQuery('.not-reservable').html('Prenotabile via email <a href=\'\'>test</a>');
+		    // jQuery('.not-reservable').html('Prenotabile via email all\'indirizzo infobib@comune.torino.it');
+		    // jQuery('.not-reservable').attr('data-original-title','email a infobib@comune.torino.it');
+		    jQuery('.not-reservable').html('Prenotabile via email');
+		    jQuery('.not-reservable').attr('data-original-title','Vedi istruzioni sotto, nella colonna Collocazione');
+		    myvar=jQuery('td:nth-child(2)', this);
+		    myvar.text(collocazione + ' Inviare email di richiesta a infobib@comune.torino.it');
+		}
+		return;
+	    }
+	    
+	    console.log("Per opac_user: " + opac_user);
 	    console.log("Biblioteca: " + biblioteca);
 	    console.log("Collocazione: " + collocazione);
 	    console.log("Inventario: " + inventario);
+	    console.log("ReqStatus: " + req_button_status);
 	    var myelem = jQuery('td:nth-child(2)', this);
-	    myelem.addClass('btn btn-success');
-	    myelem.attr('title', 'richiedi ' + collocazione + ' a magazzino ' + inventario);
+
+	    // myelem.attr('title', 'richiedi ' + collocazione + ' a magazzino ' + inventario);
+	    // modificato il 31 luglio 2023
+	    if (req_button_status == 'off') {
+		myelem.addClass('btn btn-warning');
+		myelem.attr('title', 'Servizio di richiesta al bancone non attivo');
+	    } else {
+		myelem.addClass('btn btn-success');
+		myelem.attr('title', 'Richiedi al bancone (se sei in biblioteca o se pensi di poter passare in giornata)');
+	    }
+		    
+
+	    // jQuery('#details').collapse();
+
 	    request_count++;
 	    myelem.attr('id', 'request_id_' + request_count);
 	    myelem.attr('data-collocazione', collocazione);
 	    myelem.attr('data-inventario', inventario);
 	    myelem.attr('data-manifestation_id', manifestation_id);
-
+	    // req_button_config(request_id);
+	    // return false;
 	    jQuery('#request_id_' + request_count).on("click", function () {
 		var collocazione = jQuery(this).attr('data-collocazione');
 		var inventario = jQuery(this).attr('data-inventario');
 		var manifestation_id = jQuery(this).attr('data-manifestation_id');
-		if(collocazione.match(/^CC/)!=null) {
+		console.log("Esamino qui la collocazione: " + collocazione + ' req_button_status:' + req_button_status);
+		if(collocazione.match(/^CCNC/)!=null) {
 		    alert("Il libro si trova al secondo piano, nella Sala a scaffale aperto");
 		    return false;
 		}
-		if( !confirm("Vuoi richiedere l'esemplare con collocazione " + collocazione + '?')) {
+		if(collocazione.match(/^CCPT/)!=null) {
+		    alert("Il libro si trova al secondo piano, nella Sala a scaffale aperto");
 		    return false;
 		}
-		jQuery('#request_id_' + request_count).off("click");
+		
+		if(collocazione.match(/DVD/)!=null) {
+		    alert("I DVD si trovano al secondo piano, nella Sala a scaffale aperto");
+		    return false;
+		}
+
+		if(collocazione.match(/^BCT Cons/)!=null) {
+		    alert("Questo libro si trova al secondo piano, in Sala consultazione");
+		    return false;
+		}
+		if(collocazione.match(/prenotazione/i)!=null) {
+		    alert("Questo libro si trova in un deposito esterno: non può essere richiesto al banco, ma va prenotato con l'apposita funzione presente in questa stessa pagina");
+		    return false;
+		}
+		if (req_button_status == 'off') {
+		    console.log("Devo dare un messaggio per comunicare che il servizio è spento");
+		    var bottone=jQuery('#request_id_' + request_count);
+		    bottone.addClass('btn btn-danger btn-sm disabled');
+		    bottone.html(bottone.html() + "<br>Al momento non si possono<br/>effettuare richieste al banco");
+		    return false;
+		} else {
+		    if( !confirm("Vuoi richiedere l'esemplare con collocazione " + collocazione + '? ~~~~~ (passa poi in giornata al banco prestiti per confermare la richiesta)')) {
+			return false;
+		    }
+		}
+		// jQuery('#request_id_' + request_count).off("click");
 		jQuery.ajax({
 		    type: 'POST',
-		    url: 'https://clavisbct.comperio.it/clavis_items/closed_stack_item_request',
+		    url: 'https://clavisbct.comperio.it/clavis_items/closed_stack_item_request.json',
 		    dataType: 'json',
 		    data: {collocazione:collocazione,inventario:inventario,library_id:2,
 			   manifestation_id:manifestation_id,dng_user:opac_user},
 		    async: true,
 		    beforeSend: function(jqXHR, settings) {
+			console.log("beforeSend: " + settings);
 			var bottone=jQuery('#request_id_' + request_count);
-			bottone.removeClass('btn-success');
-			bottone.addClass('btn-info');
+			var bottone_id=bottone.attr('id')
+			var precedente=bottone.prev();
+			bottone.remove();
+			precedente.after("<td id='" + bottone_id + "'>Richiesta inviata<br/>attendo risposta</td>");
 		    },
-		    error: function(jqXHR, textStatus, errorThrown) {
-			// da gestire in qualche modo
-		    },
-		    success: function(res, textStatus, jqXHR) {
-			// alert("Tornato: " + res.requests);
-			// alert(request_count);
-			var bottone=jQuery('#request_id_' + request_count);
-			myvar=res;
-			bottone.removeClass('btn btn-info');
-			bottone.attr('title', res['msg']);
-			var t = bottone.text().trim() + '<br/>' + res['msg'];
-			t += '<br/><a href="/mydiscovery#loans_active">Vedi richieste pendenti</a>';
+		    success: function(data, textStatus, jqXHR) {
+			console.log("Tornato da richiesta ajax (success) textStatus=" + textStatus);
+			var t, bottone=jQuery('#request_id_' + request_count);
+			if (data['status'] == 'error') {
+			    bottone.addClass('btn btn-danger btn-sm disabled');
+			    t = data['collocazione'] + '<br/>' + data['msg'];
+			} else {
+			    bottone.addClass('btn btn-default');
+			    bottone.attr('title', data['msg']);
+			    t = data['collocazione'] + '<br/>' + data['msg'] + "<br/><a href='https://bct.comperio.it/mydiscovery'>Vedi le richieste</a>";
+			}
 			bottone.html(t);
-			bottone.off("click");
-		    }
+		    },
+		    complete: function(xhr, textStatus) {
+			console.log("richiesta ajax completata: textStatus=" + textStatus);
+		    }, 
+		    error: function(jqXHR, textStatus, errorThrown) {
+			console.log("Errore da richiesta Ajax: " + textStatus);
+			console.log("errorThrown: " + errorThrown);
+			var bottone=jQuery('#request_id_' + request_count);
+			bottone.addClass('btn btn-danger btn-sm disabled');
+			bottone.html("Non è stato possibile<br/>registrare la richiesta (" + textStatus + ")");
+			req=jqXHR;
+		    },
+		    timeout: 10000
 		});
 	    });
+	}
+    });
+}
+
+function closed_stack_item_request2(opac_user, manifestation_id, clavisbct_status_data) {
+    // Decommentare il return per attivare le richieste a magazzino
+    if(opac_user!='sebastiano') return;
+
+    var myvar = clavisbct_status_data;
+    var req_button_status = clavisbct_status_data['csir_status'];
+    // items = jQuery(clavisbct_status_data['items']);
+    var items = clavisbct_status_data['items'];
+    var request_count=0;
+    jQuery('.table tbody tr','#items').each(function( index ) {
+	// console.log("Loop: " + index);
+	var biblioteca=jQuery('td:nth-child(1)', this).text().trim();
+	item_status=jQuery('td:nth-child(4)', this).text().trim();
+	loan_class=jQuery('td:nth-child(5)', this).text().trim();
+
+	if (biblioteca=="15 - Primo Levi" && item_status=="Su scaffale") {
+	    var collocazione=jQuery('td:nth-child(2)', this).text().trim();
+	    var inventario=jQuery('td:nth-child(3)', this).text().trim();
+	    if(collocazione.match(/^CLA/)!=null) {
+		// alert("Questo è un CLA");
+		myvar=jQuery('td:nth-child(2)', this);
+		myvar.text(collocazione + ' Inviare email di richiesta a biblioteca.levi@comune.torino.it');
+	    }
+	}
+	
+	if (biblioteca=="01 - Civica centrale" && item_status=="Su scaffale") {
+	    var collocazione=jQuery('td:nth-child(2)', this).text().trim();
+	    var inventario=jQuery('td:nth-child(3)', this).text().trim();
+
+	    if(collocazione.match(/BCTA/)!=null) {
+		// alert("Questo è un BCTA");
+		if(loan_class=='Solo consultazione') {
+		    // jQuery('.not-reservable').html('Prenotabile via email <a href=\'\'>test</a>');
+		    // jQuery('.not-reservable').html('Prenotabile via email all\'indirizzo infobib@comune.torino.it');
+		    // jQuery('.not-reservable').attr('data-original-title','email a infobib@comune.torino.it');
+		    jQuery('.not-reservable').html('Prenotabile via email');
+		    jQuery('.not-reservable').attr('data-original-title','Vedi istruzioni sotto, nella colonna Collocazione');
+		    myvar=jQuery('td:nth-child(2)', this);
+		    myvar.text(collocazione + ' Inviare email di richiesta a infobib@comune.torino.it');
+		}
+		return;
+	    }
+	    
+	    var index;
+	    items.some(function (entry, i) {
+		if (entry.serieinv == inventario) {
+		    index = i;
+		    return true;
+		}
+	    });
+	    item_id = items[index].item_id;
+	    console.log("Per opac_user: " + opac_user);
+	    console.log("Biblioteca: " + biblioteca);
+	    console.log("Collocazione: " + collocazione);
+	    console.log("Inventario: " + inventario);
+	    console.log("Item_Id: " + item_id);
+
+	    var myelem = jQuery('td:nth-child(2)', this);
+
+	    // myelem.attr('title', 'richiedi ' + collocazione + ' a magazzino ' + inventario);
+	    // modificato il 31 luglio 2023
+	    if (req_button_status == 'off') {
+		myelem.addClass('btn btn-warning');
+		myelem.attr('title', 'Servizio di richiesta al bancone non attivo');
+	    } else {
+		myelem.addClass('btn btn-success');
+		myelem.attr('title', 'Richiedi al bancone (se sei in biblioteca o se pensi di poter passare in giornata)');
+	    }
+		    
+
+	    // jQuery('#details').collapse();
+
+	    request_count++;
+	    myelem.attr('id', 'request_id_' + request_count);
+	    myelem.attr('data-collocazione', collocazione);
+	    myelem.attr('data-inventario', inventario);
+	    myelem.attr('data-manifestation_id', manifestation_id);
+	    // req_button_config(request_id);
+	    // return false;
+	    jQuery('#request_id_' + request_count).on("click", function () {
+		var collocazione = jQuery(this).attr('data-collocazione');
+		var inventario = jQuery(this).attr('data-inventario');
+		var manifestation_id = jQuery(this).attr('data-manifestation_id');
+		console.log("Esamino qui la collocazione: " + collocazione + ' req_button_status:' + req_button_status);
+		if(collocazione.match(/^CCNC/)!=null) {
+		    alert("Il libro si trova al secondo piano, nella Sala a scaffale aperto");
+		    return false;
+		}
+		if(collocazione.match(/^CCPT/)!=null) {
+		    alert("Il libro si trova al secondo piano, nella Sala a scaffale aperto");
+		    return false;
+		}
+		
+		if(collocazione.match(/DVD/)!=null) {
+		    alert("I DVD si trovano al secondo piano, nella Sala a scaffale aperto");
+		    return false;
+		}
+
+		if(collocazione.match(/^BCT Cons/)!=null) {
+		    alert("Questo libro si trova al secondo piano, in Sala consultazione");
+		    return false;
+		}
+		if(collocazione.match(/prenotazione/i)!=null) {
+		    alert("Questo libro si trova in un deposito esterno: non può essere richiesto al banco, ma va prenotato con l'apposita funzione presente in questa stessa pagina");
+		    return false;
+		}
+		if (req_button_status == 'off') {
+		    console.log("Devo dare un messaggio per comunicare che il servizio è spento");
+		    var bottone=jQuery('#request_id_' + request_count);
+		    bottone.addClass('btn btn-danger btn-sm disabled');
+		    bottone.html(bottone.html() + "<br>Al momento non si possono<br/>effettuare richieste al banco");
+		    return false;
+		} else {
+		    if( !confirm("Vuoi richiedere l'esemplare con collocazione " + collocazione + '? ~~~~~ (passa poi in giornata al banco prestiti per confermare la richiesta)')) {
+			return false;
+		    }
+		}
+		// jQuery('#request_id_' + request_count).off("click");
+		jQuery.ajax({
+		    type: 'POST',
+		    url: 'https://clavisbct.comperio.it/clavis_items/closed_stack_item_request.json',
+		    dataType: 'json',
+		    data: {collocazione:collocazione,inventario:inventario,library_id:2,
+			   manifestation_id:manifestation_id,dng_user:opac_user,item_id:item_id},
+		    async: true,
+		    beforeSend: function(jqXHR, settings) {
+			console.log("beforeSend: " + settings);
+			var bottone=jQuery('#request_id_' + request_count);
+			var bottone_id=bottone.attr('id')
+			var precedente=bottone.prev();
+			bottone.remove();
+			precedente.after("<td id='" + bottone_id + "'>Richiesta inviata<br/>attendo risposta</td>");
+		    },
+		    success: function(data, textStatus, jqXHR) {
+			console.log("Tornato da richiesta ajax (success) textStatus=" + textStatus);
+			var t, bottone=jQuery('#request_id_' + request_count);
+			if (data['status'] == 'error') {
+			    bottone.addClass('btn btn-danger btn-sm disabled');
+			    t = data['collocazione'] + '<br/>' + data['msg'];
+			} else {
+			    bottone.addClass('btn btn-default');
+			    bottone.attr('title', data['msg']);
+			    t = data['collocazione'] + '<br/>' + data['msg'] + "<br/><a href='https://bct.comperio.it/mydiscovery'>Vedi le richieste</a>";
+			}
+			bottone.html(t);
+		    },
+		    complete: function(xhr, textStatus) {
+			console.log("richiesta ajax completata: textStatus=" + textStatus);
+		    }, 
+		    error: function(jqXHR, textStatus, errorThrown) {
+			console.log("Errore da richiesta Ajax: " + textStatus);
+			console.log("errorThrown: " + errorThrown);
+			var bottone=jQuery('#request_id_' + request_count);
+			bottone.addClass('btn btn-danger btn-sm disabled');
+			bottone.html("Non è stato possibile<br/>registrare la richiesta (" + textStatus + ")");
+			req=jqXHR;
+		    },
+		    timeout: 10000
+		});
+	    });
+	}
+    });
+}
+
+function req_button_config(request_id) {
+    jQuery('#request_id_' + request_count).on("click", function () {
+	var collocazione = jQuery(this).attr('data-collocazione');
+	var inventario = jQuery(this).attr('data-inventario');
+	var manifestation_id = jQuery(this).attr('data-manifestation_id');
+	// console.log("Esamino collocazione: " + collocazione);
+	if(collocazione.match(/^CCNC/)!=null) {
+	    alert("Il libro si trova al secondo piano, nella Sala a scaffale aperto");
+	    return false;
+	}
+	if(collocazione.match(/^CCPT/)!=null) {
+	    alert("Il libro si trova al secondo piano, nella Sala a scaffale aperto");
+	    return false;
+	}
+	
+	if(collocazione.match(/DVD/)!=null) {
+	    alert("I DVD si trovano al secondo piano, nella Sala a scaffale aperto");
+	    return false;
+	}
+
+	if(collocazione.match(/^BCT Cons/)!=null) {
+	    alert("Questo libro si trova al secondo piano, in Sala consultazione");
+	    return false;
+	}
+	if(collocazione.match(/prenotazione/i)!=null) {
+	    alert("Questo libro si trova in un deposito esterno: non può essere richiesto a magazzino, ma va prenotato con l'apposita funzione presente in questa stessa pagina");
+	    return false;
+	}
+	if( !confirm("Vuoi richiedere a magazzino l'esemplare con collocazione " + collocazione + '? ~~~~~ (passa poi in giornata al banco prestiti per confermare la richiesta)')) {
+	    return false;
+	}
+	// jQuery('#request_id_' + request_count).off("click");
+	jQuery.ajax({
+	    type: 'POST',
+	    url: 'https://clavisbct.comperio.it/clavis_items/closed_stack_item_request.json',
+	    dataType: 'json',
+	    data: {collocazione:collocazione,inventario:inventario,library_id:2,
+		   manifestation_id:manifestation_id,dng_user:opac_user},
+	    async: true,
+	    beforeSend: function(jqXHR, settings) {
+		console.log("beforeSend: " + settings);
+		var bottone=jQuery('#request_id_' + request_count);
+		var bottone_id=bottone.attr('id')
+		var precedente=bottone.prev();
+		bottone.remove();
+		precedente.after("<td id='" + bottone_id + "'>Richiesta inviata<br/></td>");
+	    },
+	    success: function(data, textStatus, jqXHR) {
+		console.log("Tornato da richiesta ajax (success) textStatus=" + textStatus);
+		var t, bottone=jQuery('#request_id_' + request_count);
+		if (data['status'] == 'error') {
+		    bottone.addClass('btn btn-danger btn-sm disabled');
+		    t = data['collocazione'] + '<br/>' + data['msg'];
+		} else {
+		    bottone.addClass('btn btn-default');
+		    bottone.attr('title', data['msg']);
+		    t = data['collocazione'] + '<br/>' + data['msg'] + "<br/><a href='https://bct.comperio.it/mydiscovery'>Vedi le richieste</a>";
+		}
+		bottone.html(t);
+	    },
+	    complete: function(xhr, textStatus) {
+		console.log("richiesta ajax completata: textStatus=" + textStatus);
+	    }, 
+	    error: function(jqXHR, textStatus, errorThrown) {
+		console.log("Errore da richiesta Ajax: " + textStatus);
+		console.log("errorThrown: " + errorThrown);
+		var bottone=jQuery('#request_id_' + request_count);
+		bottone.addClass('btn btn-danger btn-sm disabled');
+		bottone.html("Non è stato possibile<br/>registrare la richiesta");
+		req=jqXHR;
+	    }
+	});
+    });
+}
+
+function new_purchase_proposals_count() {
+    // alert("conto le proposte inserite oggi");
+    var oggi = new Date();
+    var dd = oggi.getDate(), mm = oggi.getMonth()+1, yyyy = oggi.getFullYear();
+    // console.log("dd: " + dd + " mm: " + mm + " yyyy: " + yyyy);
+    var cnt=0, dt, status, g, m, a;
+    jQuery('#purchaseProposalsTableBody tr').each(function (i, row) {
+	status=jQuery('td:last', row).text().trim();
+	// alert(status);
+	if (status.match(/^annullata/i)==null) {
+	    dt=jQuery('td:first', row).text().trim();
+	    // alert("dt: " + dt);
+	    [g,m,a] = dt.split('/');
+	    // alert("split result: ");
+	    if (Number(g)==dd && Number(m) == mm && a == yyyy) {
+		// console.log("Richiesta valida, data: " + g + '/' + m + '/' + a);
+		cnt +=1 ;
+	    }
+	}
+    });
+    // console.log("Richieste valide effettuate oggi: " + cnt);
+    return cnt;
+}
+
+function pibct_edit() {
+    jQuery("#CustomizedForm_RegistrationForm").submit( function (event) {
+    	// event.preventDefault();
+	console.log("#CustomizedForm_RegistrationForm submit");
+    });
+
+    jQuery("#username").remove();
+    jQuery("#password").remove();
+    jQuery("#confirm_password").remove();
+    jQuery("#civil_status").remove();
+    jQuery("#address_type option[value='A']").remove();
+    jQuery("#address_type option[value='X']").remove();
+    jQuery("select" ,"#address_type").append('<option value="A">Altro</option>');
+
+    jQuery("#preferred_library_id option[value='1']").remove();
+    // jQuery("#preferred_library_id option[value='13']").remove(); // Carluccio
+    jQuery("#preferred_library_id option[value='21']").remove();
+    jQuery("#preferred_library_id option[value='4']").remove();
+    jQuery("#preferred_library_id option[value='5']").remove();
+    jQuery("#preferred_library_id option[value='6']").remove();
+    jQuery("#preferred_library_id option[value='7']").remove();
+    jQuery("#preferred_library_id option[value='23']").remove();
+    jQuery("#preferred_library_id option[value='9']").remove();
+    jQuery("#preferred_library_id option[value='28']").remove();
+    jQuery("#preferred_library_id option[value='26']").remove();
+    jQuery("#preferred_library_id option[value='12']").remove();
+    jQuery("#preferred_library_id option[value='30']").remove();
+    jQuery("#preferred_library_id option[value='31']").remove();
+    jQuery("#preferred_library_id option[value='32']").remove();
+    jQuery("#preferred_library_id option[value='33']").remove();
+    jQuery("#preferred_library_id option[value='22']").remove();
+    jQuery("#preferred_library_id option[value='633']").remove();
+    jQuery("#preferred_library_id option[value='677']").remove();
+    jQuery("#preferred_library_id option[value='678']").remove();
+    jQuery("#preferred_library_id option[value='802']").remove();
+    jQuery("#preferred_library_id option[value='803']").remove();
+    jQuery("#preferred_library_id option[value='1095']").remove();
+    jQuery("#preferred_library_id option[value='1125']").remove();
+    jQuery("#preferred_library_id option[value='1168']").remove();
+    jQuery("#preferred_library_id option[value='1175']").remove();
+    jQuery("#preferred_library_id option[value='1121']").remove();
+    jQuery("#preferred_library_id option[value='821']").remove();
+    jQuery("#preferred_library_id option[value='723']").remove();
+    jQuery("#preferred_library_id option[value='724']").remove();
+    jQuery("#preferred_library_id option[value='725']").remove();
+
+    // Inizio suggerimenti di Maura Vitali 26 agosto 2019
+    // Invece di "Paese di nascita":
+    jQuery('label', "#birth_country").text("Nazione di nascita *");
+    jQuery('label', "#birth_province").text('Provincia di nascita (sigla) *');
+    jQuery('label', "#citizenship").text("Cittadinanza (esempio: italiana)");
+    // Fine suggerimenti di Maura Vitali 26 agosto 2019
+
+    jQuery('#CustomizedForm_RegistrationForm_action_register').after('<p style="margin-top: 30px;">MOS_BIBL31 REV. 0 del 16/09/2019</p>')
+}
+
+function public_pibct_edit() {
+    jQuery("#CustomizedForm_RegistrationForm").submit( function (event) {
+    	// event.preventDefault();
+	console.log("#CustomizedForm_RegistrationForm submit");
+    });
+
+    jQuery("#preferred_library_id option[value='1']").remove();
+    // jQuery("#preferred_library_id option[value='13']").remove(); // Carluccio
+    jQuery("#preferred_library_id option[value='21']").remove();
+    // jQuery("#preferred_library_id option[value='4']").remove(); // Bela Rosin
+    jQuery("#preferred_library_id option[value='5']").remove();
+    jQuery("#preferred_library_id option[value='6']").remove();
+    jQuery("#preferred_library_id option[value='7']").remove();
+    jQuery("#preferred_library_id option[value='23']").remove();
+    jQuery("#preferred_library_id option[value='9']").remove();
+    jQuery("#preferred_library_id option[value='28']").remove();
+    jQuery("#preferred_library_id option[value='26']").remove();
+    jQuery("#preferred_library_id option[value='12']").remove();
+    jQuery("#preferred_library_id option[value='30']").remove();
+    jQuery("#preferred_library_id option[value='31']").remove();
+    jQuery("#preferred_library_id option[value='32']").remove();
+    jQuery("#preferred_library_id option[value='33']").remove();
+    jQuery("#preferred_library_id option[value='22']").remove();
+    jQuery("#preferred_library_id option[value='633']").remove();
+    jQuery("#preferred_library_id option[value='677']").remove();
+    jQuery("#preferred_library_id option[value='678']").remove();
+    jQuery("#preferred_library_id option[value='802']").remove();
+    jQuery("#preferred_library_id option[value='803']").remove();
+    jQuery("#preferred_library_id option[value='1095']").remove();
+    jQuery("#preferred_library_id option[value='1168']").remove();
+    // jQuery("#preferred_library_id option[value='1175']").remove();
+    jQuery("#preferred_library_id option[value='1121']").remove();
+    jQuery("#preferred_library_id option[value='821']").remove();
+    jQuery("#preferred_library_id option[value='723']").remove();
+    jQuery("#preferred_library_id option[value='724']").remove();
+    jQuery("#preferred_library_id option[value='725']").remove();
+}
+
+function check_purchase_proposals_count(opac_user) {
+    var proposte_oggi=new_purchase_proposals_count();
+    // alert("proposte_oggi: " + proposte_oggi);
+    
+    // alert("Controllo numero di proposte acquisto utente " + opac_user);
+    // opac_user='P80011';
+    // opac_user='P293116';
+    
+    var url=bctHostPort + '/clavis_patrons/purchase_proposals_count.json?opac_username=' + opac_user;
+    
+    jQuery.ajax({
+	type: 'GET',
+	url: url,
+	dataType: 'json',
+	async: true,
+	success: function(res, textStatus, jqXHR) {
+	    totale_proposte = res.count + proposte_oggi;
+	    // alert("L'utente " + opac_user + " ha " + totale_proposte + " proposte attive");
+	    // var cds_link="<a target='_new' title='Vedi il testo completo della Carta' href='http://www.comune.torino.it/cultura/biblioteche/usare_biblioteca/pdf/carta_servizi_sito.pdf'>Carta dei servizi</a>, articolo 5.5";
+	    var cds_link="<a target='_new' title='Vedi il testo completo della Carta' href='https://bct.comune.torino.it/carta-dei-servizi'>Carta dei servizi</a>, articolo 7.5.1";
+	    if(totale_proposte>=15) {
+		jQuery("a[data-target='#proposals_new']").text("[Inserimento proposte disabilitato]");
+		jQuery("#proposals_new").html("<h3>Non è possibile inserire altre proposte d'acquisto perché è stato raggiunto il numero massimo (15) indicato nella " + cds_link + "</h3>");
+	    } else {
+		jQuery("#purchaseProposalForm").submit( function (event) {
+		    event.preventDefault();
+		    //if (jQuery('#fool_on_the_hill').is(':checked')) {
+			// jQuery("#purchaseProposalForm_note").val("Richiedo la prenotazione");
+		    //} else {
+			// jQuery("#purchaseProposalForm_note").val("Non richiedo la prenotazione");
+		    //}
+		    if ( jQuery('#purchaseProposalForm_author').val().trim()!='' &&
+			 jQuery('#purchaseProposalForm_title').val().trim()!='') {
+			event.target.submit();
+		    } else {
+			// alert("empty");
+		    }
+
+		});
+		// jQuery("#purchaseProposalForm_note").attr('type','hidden');
+		// jQuery("#purchaseProposalForm_note").prev().html("<input id='fool_on_the_hill' type=checkbox> Richiedo la prenotazione del titolo come da " + cds_link + "<br/>Attenzione: non verranno prese in considerazione richieste di novità editoriali dell’anno in corso e dell’anno precedente (articolo 5.5.3 della Carta dei servizi)");
+		// jQuery("#purchaseProposalForm_note").prev().html("<input id='fool_on_the_hill' type=checkbox> Richiedo la prenotazione del titolo come da " + cds_link + "<br/>Attenzione: non verranno prese in considerazione richieste di novità editoriali dell’anno in corso e dell’anno precedente (articolo 5.5.3 della Carta dei servizi)</input><br/><input type=\"checkbox\" id=\"ebook_check\" /> Richiedo la versione e-Pub (in fase di test)</input>");
+		// var epub_check = jQuery("<input type=\"checkbox\" id=\"ebook_check\" /> ePub");
+		// jQuery("#fool_on_the_hill").insertBefore(epub_check);
+	    }
+	}
+    });
+}
+
+function IccuOpacLink(bid) {
+    var url="https://opac.sbn.it/opacsbn/opaclib?db=solr_iccu&rpnquery=%2540attrset%2Bbib-1%2B%2540attr%2B1%253D1032%2B%2540attr%2B4%253D2%2B%2522IT%255C%255CICCU%255C%255C__POLO__%255C%255C__NUMERO__%2522&select_db=solr_iccu&nentries=1&rpnlabel=Preferiti&resultForward=opac%2Ficcu%2Ffull.jsp&searchForm=opac%2Ficcu%2Ferror.jsp&do_cmd=search_show_cmd&brief=brief&saveparams=false&&fname=none&from=1"
+    url=url.sub('__POLO__',bid.substr(0,3));
+    return url.sub('__NUMERO__',bid.substr(3));
+}
+
+function replace_iccu_style_url() {
+    jQuery('li','.notes').filter(function() {
+	if (jQuery(this).text().match('URL')) {
+	    testo = jQuery(this).text();
+	    a=testo.split('<URL>');
+	    testo=a[1].trim();
+	    testo = testo.split('|');
+	    if (testo.length == 2) {
+		link_text = testo[0].trim();
+		link_url = testo[1].trim();
+	    } else {
+		link_text = link_url = testo[0].trim();
+	    }
+	    testo = '<a href="' + link_url + '" target=_blank>' + link_text + '</a>';
+	    
+	    // alert(testo);
+	    jQuery(this).html(testo);
 	}
     });
 }
@@ -273,23 +853,26 @@ function closed_stack_item_request(opac_user, manifestation_id) {
 function main() {
     jQuery('a','.nav').filter(function(){if(this.href==="https://bct.comperio.it/libroparlato/") {return true}}).attr('accesskey','2');
 
-    if (document.location.href.match('/opac/detail/view/sbct:catalog:')) {
-	adjust_multilevel_page();
-	if(jQuery('#issues').size()===1) {
-	    serial_manifestation(document.location.href.split(":").reverse()[0], jQuery('#issues'));
-	} else {
-	    containers_info(document.location.href.split(":").reverse()[0]);
-	}
+    // if (document.location.href.match('/opac/detail/view/sbct:catalog:')) {  ---> modificata url il 27 luglio 2023
+    if (document.location.href.match('/risultati-della-ricerca/detail/view/sbct:catalog:')) {
+	// adjust_multilevel_page(); Commentato 28 febbraio 2020 perché non funziona più
+	containers_info(document.location.href.split(":").reverse()[0]);
 	// commentato 5 aprile 2017 (non sembra che sia molto utile, a oggi, usare oidomatic)
 	// oidomatic();
+	replace_iccu_style_url();
+    } else {
+	if (document.location.href.match('/risultati-della-ricerca/detail/view/bid:')) {
+	    // alert(document.location.href.split(":").reverse()[0]);
+	    redir_via_sbnbid(document.location.href.split(":").reverse()[0]);
+	}
     }
 
     if (document.location.href.match('/libroparlato')) {
 	jQuery('a').show().filter(function(){if(this.href==="https://bct.comperio.it/libroparlato/libroparlato-search/advancedsearch") {return true}}).hide();
     }
 
-    if (document.location.href.match('https://bct.comperio.it/opac/detail/view/sbct:catalog:15973')) {
-	// qualcosa
+    if (document.location.href.match('https://bct.comperio.it/opac/detail/view/sbct:catalog:')) {
+	// y_substituteCover(jQuery('.cover'),document.location.href.split(":").reverse()[0]);
     }
 
     //if (document.location.href.match('search')) {
@@ -298,19 +881,89 @@ function main() {
     // jQuery('#ancora_risultati').css('visibility', 'hidden')
     // }
 
+    if (document.location.href.match('https://bct.comperio.it/pibct')) {
+	// Non usato
+	pibct_edit();
+    }
+
+    if (document.location.href.match('https://bct.comperio.it/pre-iscrizione-alle-biblioteche-civiche-torinesi')) {
+	public_pibct_edit();
+    }
+
+    
     if (logged_in()==true) {
-	if (username()=='sebastiano') {
-	    altravar='user logged in';
-	    // insert_jquery_cookie_plugin();
-	    if (document.location.href.match('https://bct.comperio.it/opac/detail/view/sbct:catalog:')) {
-		closed_stack_item_request(username(), document.location.href.split(":").reverse()[0]);
-	    }
-	    if (document.location.href.match('https://bct.comperio.it/mydiscovery#loans_active')) {
-		jQuery('h3:first','#loans_active').before("<div id='closed_stack_requests'></div>");
-		manage_closed_stack_requests(username(), jQuery('#closed_stack_requests'));
-	    }
+	if (document.location.href.match('https://bct.comperio.it/mydiscovery')) {
+	    check_purchase_proposals_count(username());
 	}
-	if (document.location.href.match('https://bct.comperio.it/opac/detail/view/sbct:catalog:')) {
+	if (document.location.href.match('https://bct.comperio.it/risultati-della-ricerca/detail/view/bid:')) {
+	    redir_via_sbnbid(document.location.href.split(":").reverse()[0]);
+	}
+
+	// Dal 27 luglio 2023 cambiato da:
+	//  https://bct.comperio.it/opac/detail/view/sbct:catalog:xxxxx
+	// a:
+	//  https://bct.comperio.it/risultati-della-ricerca/detail/view/sbct:catalog:xxxxx
+	
+	if (document.location.href.match('https://bct.comperio.it/risultati-della-ricerca/detail/view/sbct:catalog:')) {
+	    // jQuery('a',jQuery('#details').prev()).click();
+	    hide_details_maybe();
+	    var req_button_status = 'off';
+	    var manifestation_id = document.location.href.split(":").reverse()[0];
+	    // clavisbct_attachments(username(), document.location.href.split(":").reverse()[0]);
+
+	    if (username() == 'sebastiano') {
+
+		// alert('sei sebastiano');
+		// jQuery('#logoutDeadlineModal').bind('click', function() {
+		//     alert('User clicked on "logout."');
+		//     window.close();
+		// });
+		
+		// clavisbct_attachments(username());
+		var url = 'https://clavisbct.comperio.it/closed_stack_item_requests/csir_status';
+		console.log("url: " + url);
+		jQuery.ajax({
+		    type: 'GET',
+		    url: url,
+		    success: function(data) {
+			closed_stack_item_request2(username(), manifestation_id, data);
+		    },
+		    data: {library_id:2,manifestation_id:manifestation_id,dng_user:username()},
+		    error: function() {
+			// alert('clavisbct non ha risposto in tempo utile');
+			closed_stack_item_request(username(), manifestation_id, req_button_status);
+		    },
+		    timeout: 10000,
+		    async: true
+		});
+	    } else {
+		jQuery.ajax({
+		    type: 'GET',
+		    url: 'https://clavisbct.comperio.it/closed_stack_item_requests/csir_status',
+		    success: function(data) {
+			// alert('data: ' + data);
+			req_button_status = data;
+			closed_stack_item_request(username(), document.location.href.split(":").reverse()[0], req_button_status);
+		    },
+		    data: {},
+		    error: function() {
+			// alert('clavisbct non ha risposto in tempo utile');
+			closed_stack_item_request(username(), document.location.href.split(":").reverse()[0], req_button_status);
+		    },
+		    timeout: 10000,
+		    async: true
+		});
+	    }
+
+	}
+	// insert_jquery_cookie_plugin();
+	if (document.location.href.match('https://bct.comperio.it/mydiscovery')) {
+	    jQuery('h3:first','#loans_active').before("<div id='closed_stack_requests'></div>");
+	    manage_closed_stack_requests(username(), jQuery('#closed_stack_requests'));
+	}
+
+	// if (document.location.href.match('https://bct.comperio.it/opac/detail/view/sbct:catalog:')) {
+	if (document.location.href.match('https://bct.comperio.it/risultati-della-ricerca/detail/view/sbct:catalog:')) {
 	    clavisbct_attachments(username());
 	}
 	if (document.location.href.match('/search')) {
@@ -341,18 +994,28 @@ function main() {
 		user_login_on_clavisbct(uname,psw);
 		return true;
 	    } else {
-		// alert("call user_login_on_clavisbct");
-		user_login_on_clavisbct(uname,psw);
+		// Decommentare per attivare la login in clavisbct
+		// user_login_on_clavisbct(uname,psw);
 		return true;
 	    }
 	});
+	if (document.location.href.match('https://bct.comperio.it/risultati-della-ricerca/detail/view/sbct:catalog:')) {
+	    adjust_manifestation_details(document.location.href.split(":").reverse()[0]);
+	}
+    }
+}
+
+if(typeof String.prototype.trim !== 'function') {
+    String.prototype.trim = function() {
+	return this.replace(/^\s+|\s+$/g, '');
     }
 }
 
 jQuery(document).ready(function() {
     // jQuery.noConflict();
-    jQuery('a.logo','.mainHeader').attr('href','http://www.comune.torino.it/cultura/biblioteche/');
-    jQuery('a.logo','.mainHeader').attr('title','Sito web delle Biblioteche civiche torinesi');
+    // jQuery('a.logo','.mainHeader').attr('href','http://www.comune.torino.it/cultura/biblioteche/');
+    jQuery('a.logo','.mainHeader').attr('href','https://bct.comune.torino.it'); // dal 28 luglio 2020
+    jQuery('a.logo','.mainHeader').attr('title','Vai al Sito web delle Biblioteche civiche torinesi');
     // inserisci_legenda_per_screen_reader(); // eliminato aprile 2017
     main();
     signal_var='sono in clavisbct_opac 4';

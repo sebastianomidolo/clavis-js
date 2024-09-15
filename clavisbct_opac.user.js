@@ -2,7 +2,7 @@
 // @name           clavisbct_opac
 // @namespace      clavisbct_opac_ns
 // @description    Integratore BCT per DiscoveryNG
-// @include        http://bct.comperio.it/opac/search*
+// @include        https://bct.comperio.it/*
 // @creator        Sebastiano Midolo - BCT (Biblioteche civiche torinesi)
 // @version        0.13
 // ==/UserScript==
@@ -28,7 +28,7 @@
 
 function load_js() {
     var s = document.createElement('script');
-    s.src = 'http://456.selfip.net/clavis/clavisbct_opacext.js';
+    s.src = 'https://bctwww.comperio.it/clavis/clavisbct_opac.js';
     document.body.appendChild(s);
     // document.body.removeChild(s);
 }
